@@ -1,4 +1,5 @@
 .tmp/
 .work/
+__pycache__/
 LibrarySignals/Bin/*/
 !LibrarySignals/Bin/SOURCE.md
