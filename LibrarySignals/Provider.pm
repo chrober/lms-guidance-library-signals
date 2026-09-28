@@ -40,10 +40,10 @@ sub guidance_provider_descriptor_v1 {
         scopes => ['global_candidate'],
         settings_schema_version => 1,
         controls => [
-            _control('playcount_influence', 'integer', -100, 100, 0),
-            _control('last_played_influence', 'integer', -100, 100, 0),
+            _control('playcount_influence', 'integer', -100, 100, 0, 'playcount'),
+            _control('last_played_influence', 'integer', -100, 100, 0, 'last_played'),
             _control('last_played_horizon_days', 'integer', 30, 1825, 180),
-            _control('library_age_influence', 'integer', -100, 100, 0),
+            _control('library_age_influence', 'integer', -100, 100, 0, 'library_age'),
             _control('library_age_horizon_days', 'integer', 30, 3650, 365),
         ],
         native_spi => {
@@ -62,7 +62,7 @@ sub guidance_provider_descriptor_v1 {
 }
 
 sub _control {
-    my ($key, $type, $minimum, $maximum, $factory_default) = @_;
+    my ($key, $type, $minimum, $maximum, $factory_default, $guidance_channel) = @_;
     my $token = uc($key);
     return {
         key => $key,
@@ -71,6 +71,7 @@ sub _control {
         maximum => $maximum,
         factory_default => $factory_default,
         host_overridable => 1,
+        (defined $guidance_channel ? (guidance_channel => $guidance_channel) : ()),
         label_token => 'GUIDANCE_LIBRARY_SIGNALS_' . $token,
         help_token => 'GUIDANCE_LIBRARY_SIGNALS_' . $token . '_DESC',
     };

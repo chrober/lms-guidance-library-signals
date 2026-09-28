@@ -2,6 +2,8 @@ package Plugins::LibrarySignals::Plugin;
 
 use strict;
 use base qw(Slim::Plugin::Base);
+use File::Basename qw(dirname);
+use File::Spec::Functions qw(catfile);
 require 'LibrarySignals/Provider.pm';
 
 sub getDisplayName { return 'PLUGIN_LIBRARYSIGNALS_NAME'; }
@@ -9,11 +11,21 @@ sub getDisplayName { return 'PLUGIN_LIBRARYSIGNALS_NAME'; }
 sub initPlugin {
     my $class = shift;
     Plugins::LibrarySignals::Provider::init_preferences();
+    _load_strings();
     if (main::WEBUI) {
         require 'LibrarySignals/Settings.pm';
         Plugins::LibrarySignals::Settings->new;
     }
     $class->SUPER::initPlugin();
+}
+
+sub _load_strings {
+    my $path = catfile(dirname(__FILE__), 'strings.txt');
+    return unless -r $path;
+    eval {
+        require Slim::Utils::Strings;
+        Slim::Utils::Strings::loadFile($path);
+    };
 }
 
 sub guidance_provider_descriptor_v1 {
