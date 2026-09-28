@@ -1,0 +1,4 @@
+.tmp/
+.work/
+LibrarySignals/Bin/*/
+!LibrarySignals/Bin/SOURCE.md

@@ -1,0 +1,16 @@
+name: Test provider plugin
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  perl-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run provider contract tests
+        run: |
+          perl tests/provider_descriptor.t
+          perl tests/settings_contract.t
+          perl tests/plugin_contract.t

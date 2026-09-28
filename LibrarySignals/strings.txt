@@ -1,0 +1,56 @@
+PLUGIN_LIBRARYSIGNALS_NAME
+	EN	Local Library Signals
+
+PLUGIN_LIBRARYSIGNALS_DESC
+	EN	Optional local listening and library-age guidance for Bliss hosts
+
+DEBUG_PLUGIN_LIBRARYSIGNALS
+	EN	Local Library Signals
+
+PLUGIN_LIBRARYSIGNALS_NOTE
+	EN	This provider publishes optional local listening and library-age guidance. Hosts discover it automatically, but keep it disabled until you enable it in the host's settings.
+
+PLUGIN_LIBRARYSIGNALS_STATUS
+	EN	Provider status
+
+PLUGIN_LIBRARYSIGNALS_STATUS_AVAILABLE
+	EN	The native library-signals provider and Lyrion persistent database are available.
+
+PLUGIN_LIBRARYSIGNALS_STATUS_UNAVAILABLE
+	EN	The provider is not available (%s).
+
+PLUGIN_LIBRARYSIGNALS_DEFAULTS
+	EN	Default guidance policy
+
+PLUGIN_LIBRARYSIGNALS_DEFAULTS_NOTE
+	EN	These defaults apply when a host enables this provider without overriding an individual control. A host may show its own effective values for a job.
+
+GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE
+	EN	Play-count influence
+
+GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE_DESC
+	EN	Negative values prefer less-played tracks; positive values prefer more-played tracks. Zero is neutral.
+
+GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE
+	EN	Last-played influence
+
+GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE_DESC
+	EN	Negative values prefer tracks not heard recently; positive values prefer recently heard tracks. Zero is neutral.
+
+GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS
+	EN	Last-played saturation horizon (days)
+
+GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS_DESC
+	EN	After this age, increasingly older last-played dates have the same effect.
+
+GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_INFLUENCE
+	EN	Library-age influence
+
+GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_INFLUENCE_DESC
+	EN	Positive values prefer newer library additions; negative values prefer older additions. Zero is neutral.
+
+GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_HORIZON_DAYS
+	EN	Library-age saturation horizon (days)
+
+GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_HORIZON_DAYS_DESC
+	EN	After this age, increasingly older library dates have the same effect.

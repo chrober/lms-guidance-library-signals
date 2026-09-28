@@ -1,0 +1,35 @@
+[% PROCESS settings/header.html %]
+
+[% WRAPPER settingSection %]
+    <p>[% "PLUGIN_LIBRARYSIGNALS_NOTE" | string %]</p>
+
+    <h3>[% "PLUGIN_LIBRARYSIGNALS_STATUS" | string %]</h3>
+    [% IF provider_status.available %]
+        <p style="color:#398439">[% "PLUGIN_LIBRARYSIGNALS_STATUS_AVAILABLE" | string %]</p>
+    [% ELSE %]
+        <p style="color:#c9302c">[% "PLUGIN_LIBRARYSIGNALS_STATUS_UNAVAILABLE" | string(provider_status.reason) %]</p>
+    [% END %]
+
+    <h3>[% "PLUGIN_LIBRARYSIGNALS_DEFAULTS" | string %]</h3>
+    <p>[% "PLUGIN_LIBRARYSIGNALS_DEFAULTS_NOTE" | string %]</p>
+
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE_DESC" %]
+        <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_playcount_influence" id="playcount_influence" value="[% prefs.playcount_influence %]" size="5">
+    [% END %]
+
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE_DESC" %]
+        <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_last_played_influence" id="last_played_influence" value="[% prefs.last_played_influence %]" size="5">
+    [% END %]
+
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS" desc="GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS_DESC" %]
+        <input type="number" min="30" max="1825" step="1" class="stdedit" name="pref_last_played_horizon_days" id="last_played_horizon_days" value="[% prefs.last_played_horizon_days %]" size="6">
+    [% END %]
+
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_INFLUENCE_DESC" %]
+        <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_library_age_influence" id="library_age_influence" value="[% prefs.library_age_influence %]" size="5">
+    [% END %]
+
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_HORIZON_DAYS" desc="GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_HORIZON_DAYS_DESC" %]
+        <input type="number" min="30" max="3650" step="1" class="stdedit" name="pref_library_age_horizon_days" id="library_age_horizon_days" value="[% prefs.library_age_horizon_days %]" size="6">
+    [% END %]
+[% END %]
