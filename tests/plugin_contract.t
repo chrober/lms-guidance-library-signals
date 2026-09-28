@@ -24,6 +24,8 @@ use lib '.';
     sub WEBUI { 0 }
 }
 
+require 'LibrarySignals/Provider.pm';
+$INC{'Plugins/LibrarySignals/Provider.pm'} = $INC{'LibrarySignals/Provider.pm'};
 require 'LibrarySignals/Plugin.pm';
 
 is(Plugins::LibrarySignals::Plugin->getDisplayName,

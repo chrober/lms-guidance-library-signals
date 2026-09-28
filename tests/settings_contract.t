@@ -29,6 +29,8 @@ use lib '.';
     $INC{'Slim/Utils/Strings.pm'} = __FILE__;
 }
 
+require 'LibrarySignals/Provider.pm';
+$INC{'Plugins/LibrarySignals/Provider.pm'} = $INC{'LibrarySignals/Provider.pm'};
 require 'LibrarySignals/Settings.pm';
 
 is(Plugins::LibrarySignals::Settings->name, 'PLUGIN_LIBRARYSIGNALS_NAME',

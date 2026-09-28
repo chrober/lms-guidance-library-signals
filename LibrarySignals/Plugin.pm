@@ -4,7 +4,7 @@ use strict;
 use base qw(Slim::Plugin::Base);
 use File::Basename qw(dirname);
 use File::Spec::Functions qw(catfile);
-require 'LibrarySignals/Provider.pm';
+use Plugins::LibrarySignals::Provider;
 
 sub getDisplayName { return 'PLUGIN_LIBRARYSIGNALS_NAME'; }
 
@@ -13,7 +13,7 @@ sub initPlugin {
     Plugins::LibrarySignals::Provider::init_preferences();
     _load_strings();
     if (main::WEBUI) {
-        require 'LibrarySignals/Settings.pm';
+        require 'Plugins/LibrarySignals/Settings.pm';
         Plugins::LibrarySignals::Settings->new;
     }
     $class->SUPER::initPlugin();

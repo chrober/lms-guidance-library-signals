@@ -5,7 +5,7 @@ use warnings;
 use base qw(Slim::Web::Settings);
 use Slim::Utils::Prefs;
 
-require 'LibrarySignals/Provider.pm';
+use Plugins::LibrarySignals::Provider;
 
 my $prefs = Slim::Utils::Prefs::preferences('plugin.guidancelibrarysignals');
 
