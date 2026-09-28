@@ -35,6 +35,7 @@ sub guidance_provider_descriptor_v1 {
         protocol_version => 1,
         provider_id => 'library-signals',
         display_name => 'Local library signals',
+        settings_uri => 'plugins/LibrarySignals/settings/librarysignals.html',
         capabilities => [qw(play_count last_played library_age)],
         scopes => ['global_candidate'],
         settings_schema_version => 1,
