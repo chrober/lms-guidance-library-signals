@@ -35,4 +35,24 @@ my $descriptor = Plugins::LibrarySignals::Plugin->guidance_provider_descriptor_v
 is($descriptor->{provider_id}, 'library-signals',
     'plugin forwards the public provider descriptor');
 
+{
+    no warnings 'redefine';
+    my @received;
+    local *Plugins::LibrarySignals::Provider::guidance_provider_native_spi_config_v1 = sub {
+        @received = @_;
+        return { id => 'library-signals-guidance' };
+    };
+
+    my $policy = { playcount_influence => -80 };
+    my $context = { candidate_identity_artifact => { kind => 'eligible-candidate-identities-v1' } };
+    my $config = Plugins::LibrarySignals::Plugin->guidance_provider_native_spi_config_v1(
+        $policy, $context,
+    );
+
+    is_deeply($config, { id => 'library-signals-guidance' },
+        'plugin returns the native provider configuration');
+    is_deeply(\@received, [$policy, $context],
+        'plugin removes its class invocant before forwarding native factory arguments');
+}
+
 done_testing;

@@ -41,6 +41,7 @@ sub guidance_provider_status_v1 {
 }
 
 sub guidance_provider_native_spi_config_v1 {
+    shift;
     return Plugins::LibrarySignals::Provider::guidance_provider_native_spi_config_v1(@_);
 }
 
