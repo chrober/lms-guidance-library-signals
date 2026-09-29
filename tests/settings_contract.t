@@ -41,4 +41,10 @@ is(Plugins::LibrarySignals::Settings->page,
 ok(Plugins::LibrarySignals::Settings->prefs,
     'settings page owns a provider preference namespace');
 
+open my $template, '<', 'LibrarySignals/HTML/EN/plugins/LibrarySignals/settings/librarysignals.html'
+    or die "Cannot read settings template: $!";
+my $template_source = do { local $/; <$template> };
+like($template_source, qr/\[% PROCESS settings\/footer\.html %\]/,
+    'settings template includes the standard footer with its Save button');
+
 done_testing;
