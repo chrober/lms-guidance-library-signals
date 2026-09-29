@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update the LMS extension feed entry for Local Library Signals."""
+"""Update the LMS extension feed entry for Bliss Guidance: Library Signals."""
 
 from __future__ import annotations
 
@@ -8,8 +8,8 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 PLUGIN_NAME = "LibrarySignals"
-PLUGIN_TITLE = "Local Library Signals"
-PLUGIN_DESC = "Optional local listening and library-age guidance for compatible Bliss hosts."
+PLUGIN_TITLE = "Bliss Guidance: Library Signals"
+PLUGIN_DESC = "Optional listening and library signals for compatible Bliss hosts."
 PLUGIN_CREATOR = "Christoph O'Bermair"
 
 

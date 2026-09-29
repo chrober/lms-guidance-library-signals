@@ -1,8 +1,8 @@
-# Local Library Signals
+# Bliss Guidance: Library Signals
 
-`lms-guidance-library-signals` is a Lyrion provider plugin for optional
-play-count, last-played, and library-age guidance. It is not a host and does
-not select music by itself.
+`lms-guidance-library-signals` is a Lyrion provider plugin in the **Bliss
+Guidance** family. It contributes optional play-count, last-played, and
+library-age guidance; it is not a host and does not select music by itself.
 
 Compatible hosts discover this enabled plugin through Lyrion's plugin manager.
 Each host keeps the provider disabled by default and can expose host-specific

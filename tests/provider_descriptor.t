@@ -30,6 +30,8 @@ require 'LibrarySignals/Provider.pm';
 my $descriptor = Plugins::LibrarySignals::Provider::guidance_provider_descriptor_v1();
 is($descriptor->{protocol_version}, 1, 'publishes descriptor protocol v1');
 is($descriptor->{provider_id}, 'library-signals', 'publishes stable provider ID');
+is($descriptor->{display_name}, 'Bliss Guidance: Library Signals',
+    'publishes the Bliss Guidance family name for host discovery');
 is($descriptor->{native_spi}{provider_id}, 'library-signals-guidance',
     'maps to native provider ID');
 is_deeply(

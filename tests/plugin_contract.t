@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
+use File::Spec;
 use lib '.';
 
 {
@@ -31,6 +32,12 @@ require 'LibrarySignals/Plugin.pm';
 is(Plugins::LibrarySignals::Plugin->getDisplayName,
     'PLUGIN_LIBRARYSIGNALS_NAME',
     'plugin publishes the localized provider name');
+my $strings_path = File::Spec->catfile('LibrarySignals', 'strings.txt');
+open my $strings, '<', $strings_path or die "Cannot read $strings_path: $!";
+my $strings_text = do { local $/; <$strings> };
+close $strings;
+like($strings_text, qr/PLUGIN_LIBRARYSIGNALS_NAME\s+EN\s+Bliss Guidance: Library Signals/,
+    'localized display name uses the Bliss Guidance family name');
 my $descriptor = Plugins::LibrarySignals::Plugin->guidance_provider_descriptor_v1;
 is($descriptor->{provider_id}, 'library-signals',
     'plugin forwards the public provider descriptor');

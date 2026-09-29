@@ -1,11 +1,11 @@
 PLUGIN_LIBRARYSIGNALS_NAME
-	EN	Local Library Signals
+	EN	Bliss Guidance: Library Signals
 
 PLUGIN_LIBRARYSIGNALS_DESC
-	EN	Optional local listening and library-age guidance for Bliss hosts
+	EN	Optional listening and library signals for compatible Bliss hosts
 
 DEBUG_PLUGIN_LIBRARYSIGNALS
-	EN	Local Library Signals
+	EN	Bliss Guidance: Library Signals
 
 PLUGIN_LIBRARYSIGNALS_NOTE
 	EN	This provider publishes optional local listening and library-age guidance. Hosts discover it automatically, but keep it disabled until you enable it in the host's settings.

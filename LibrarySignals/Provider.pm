@@ -34,7 +34,7 @@ sub guidance_provider_descriptor_v1 {
     return {
         protocol_version => 1,
         provider_id => 'library-signals',
-        display_name => 'Local library signals',
+        display_name => 'Bliss Guidance: Library Signals',
         settings_uri => 'plugins/LibrarySignals/settings/librarysignals.html',
         capabilities => [qw(play_count last_played library_age)],
         scopes => ['global_candidate'],

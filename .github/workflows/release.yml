@@ -1,4 +1,4 @@
-name: Publish Local Library Signals
+name: Publish Bliss Guidance: Library Signals
 
 on:
   workflow_dispatch:
@@ -48,6 +48,7 @@ jobs:
           perl tests/provider_descriptor.t
           perl tests/settings_contract.t
           perl tests/plugin_contract.t
+          perl tests/installed_layout.t
       - name: Verify no native executable is committed
         run: |
           set -euo pipefail
@@ -142,8 +143,8 @@ jobs:
           VERSION: ${{ steps.meta.outputs.version }}
         run: |
           set -euo pipefail
-          printf '# Local Library Signals %s\n\nPlatform-specific Lyrion provider packages.\n' "$VERSION" > release-notes.md
-          if gh release view "$TAG" >/dev/null 2>&1; then gh release upload "$TAG" dist/* --clobber; else gh release create "$TAG" dist/* --target "$GITHUB_SHA" --title "Local Library Signals $VERSION" --notes-file release-notes.md; fi
+          printf '# Bliss Guidance: Library Signals %s\n\nPlatform-specific Lyrion provider packages.\n' "$VERSION" > release-notes.md
+          if gh release view "$TAG" >/dev/null 2>&1; then gh release upload "$TAG" dist/* --clobber; else gh release create "$TAG" dist/* --target "$GITHUB_SHA" --title "Bliss Guidance: Library Signals $VERSION" --notes-file release-notes.md; fi
       - name: Update extension feed
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) && (github.event_name != 'workflow_dispatch' || inputs.update_lms_plugins) }}
         uses: actions/checkout@v4
@@ -166,4 +167,4 @@ jobs:
           python scripts/update_lms_plugins_repo.py --repo-xml lms-plugins/repo.xml --version "$VERSION" --linux-url "$LINUX_URL" --linux-sha "$LINUX_SHA" --mac-url "$MAC_URL" --mac-sha "$MAC_SHA" --windows-url "$WINDOWS_URL" --windows-sha "$WINDOWS_SHA"
           python -c "import xml.etree.ElementTree as ET; ET.parse('lms-plugins/repo.xml')"
           cd lms-plugins
-          if ! git diff --quiet -- repo.xml; then git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'; git add repo.xml; git commit -m "Publish Local Library Signals $VERSION"; git push; fi
+          if ! git diff --quiet -- repo.xml; then git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'; git add repo.xml; git commit -m "Publish Bliss Guidance: Library Signals $VERSION"; git push; fi
