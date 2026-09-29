@@ -3,7 +3,7 @@
   <id>2b8942f4-e862-42e5-a349-f1d4ec7d5dd8</id>
   <name>PLUGIN_LIBRARYSIGNALS_NAME</name>
   <module>Plugins::LibrarySignals::Plugin</module>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <description>PLUGIN_LIBRARYSIGNALS_DESC</description>
   <creator>Christoph O'Bermair</creator>
   <defaultState>

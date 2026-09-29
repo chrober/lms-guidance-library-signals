@@ -41,6 +41,15 @@ is(Plugins::LibrarySignals::Settings->page,
 ok(Plugins::LibrarySignals::Settings->prefs,
     'settings page owns a provider preference namespace');
 
+my $descriptor = Plugins::LibrarySignals::Provider::guidance_provider_descriptor_v1();
+my %render_as = map { $_->{key} => $_->{render_as} } @{$descriptor->{controls}};
+is($render_as{playcount_influence}, 'slider',
+    'play-count influence declares the slider UI used on the provider page');
+is($render_as{last_played_horizon_days}, 'number',
+    'last-played horizon declares the plain numeric UI used on the provider page');
+is($render_as{library_age_horizon_days}, 'number',
+    'library-age horizon declares the plain numeric UI used on the provider page');
+
 open my $template, '<', 'LibrarySignals/HTML/EN/plugins/LibrarySignals/settings/librarysignals.html'
     or die "Cannot read settings template: $!";
 my $template_source = do { local $/; <$template> };
