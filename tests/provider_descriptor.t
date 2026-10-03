@@ -7,9 +7,9 @@ use lib '.';
     package TestPrefs;
     sub new { bless { values => {} }, shift }
     sub init {
-        my ($self, $defaults) = @_;
-        $self->{values}{$_} = $defaults->{$_}
-            for grep { !exists $self->{values}{$_} } keys %$defaults;
+        # Mimic a newly installed provider before its settings page has ever
+        # persisted a preference file. Defaults must still be published.
+        return;
     }
     sub get { $_[0]->{values}{$_[1]} }
     sub set { $_[0]->{values}{$_[1]} = $_[2] }
@@ -45,7 +45,7 @@ is_deeply(
 );
 
 my $defaults = Plugins::LibrarySignals::Provider::guidance_provider_defaults_v1();
-is($defaults->{playcount_influence}, 0, 'play-count factory default is neutral');
+is($defaults->{playcount_influence}, 0, 'play-count factory default is available before provider settings are saved');
 is($defaults->{last_played_influence}, 0, 'last-played factory default is neutral');
 is($defaults->{library_age_influence}, 0, 'library-age factory default is neutral');
 is($defaults->{last_played_horizon_days}, 180, 'last-played default horizon is 180 days');
