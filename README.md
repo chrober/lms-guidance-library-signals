@@ -4,13 +4,17 @@
 Guidance** family. It contributes optional play-count, last-played, and
 library-age guidance; it is not a host and does not select music by itself.
 
-Compatible hosts discover this enabled plugin through Lyrion's plugin manager.
-Each host keeps the provider disabled by default and can expose host-specific
-overrides. Provider settings on this page remain the defaults when a host has
-no override.
+Better Call Bliss 0.22.0 and Bliss Mixer Lab 0.10.0 discover this enabled plugin
+through Lyrion's plugin manager. Each host keeps the provider disabled by
+default and can expose host-specific overrides. Provider settings on this page
+remain the defaults when a host has no override.
+
+The current Lyrion provider release is 0.2.1. The native provider path is
+shipped and reads only the trusted, read-only `persist.db` resource supplied by
+the host; APC remains a separate future provider.
 
 The provider invokes the native
-[`bliss-guidance-library-signals`](https://github.com/chrober/bliss-guidance-library-signals)
+[`bliss-guidance-library-signals`](https://github.com/chrober/lms-guidance-library-signals)
 binary. It reads Lyrion's `persist.db` read-only, uses a frozen candidate
 identity artifact supplied by the host, and returns bounded guidance through
 the host-neutral
