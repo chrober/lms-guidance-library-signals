@@ -22,7 +22,12 @@ the host-neutral
 
 ## Installation
 
-Install this plugin and the matching native binaries through the Lyrion
-extension repository. Enable the plugin, then explicitly enable it in a
-compatible host such as Better Call Bliss. Installing this provider never
-installs or changes a host plugin automatically.
+Install **Bliss Guidance: Library Signals** and its matching native binaries
+through [chrober's LMS Plugin Repository](https://github.com/chrober/lms-plugins),
+then enable the provider in Lyrion. A compatible host such as Better Call Bliss
+or Bliss Mixer Lab discovers it but keeps it disabled until you explicitly
+enable it in that host's settings. Installing this provider never installs or
+changes a host plugin automatically.
+
+Configure the provider defaults on its own settings page. Hosts inherit those
+values unless a host or job explicitly overrides an eligible setting.
