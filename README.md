@@ -22,7 +22,7 @@ the host-neutral
 [`bliss-playlist-guidance-spi`](https://github.com/chrober/bliss-playlist-guidance-spi).
 
 Provider conventions and UI rules are documented in
-[lms-bliss-guidance-provider-kit](https://github.com/chrober/lms-bliss-guidance-provider-kit).
+[`lms-bliss-guidance-provider-kit`](https://github.com/chrober/lms-bliss-guidance-provider-kit).
 
 ## Installation
 
