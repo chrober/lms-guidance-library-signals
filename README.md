@@ -15,11 +15,19 @@ default and can expose host-specific overrides. Provider settings on this page
 remain the defaults when a host has no override.
 
 The provider invokes the native
-[`bliss-guidance-library-signals`](https://github.com/chrober/lms-guidance-library-signals)
+[`bliss-guidance-library-signals`](https://github.com/chrober/bliss-guidance-library-signals)
 binary. It reads Lyrion's `persist.db` read-only, uses a frozen candidate
 identity artifact supplied by the host, and returns bounded guidance through
 the host-neutral
 [`bliss-playlist-guidance-spi`](https://github.com/chrober/bliss-playlist-guidance-spi).
+
+When [Alternative Play Count](https://github.com/AF-1/lms-alternativeplaycount)
+is installed and enabled, the provider settings page offers an optional source
+switch. Compatible host settings pages render the same descriptor control and
+may override the provider default for that host. The selected source uses APC
+for play count and last played while continuing to use Lyrion's native
+first-seen value for library age. APC-specific skip and DPSV guidance is
+outside this provider.
 
 Provider conventions and UI rules are documented in
 [`lms-bliss-guidance-provider-kit`](https://github.com/chrober/lms-bliss-guidance-provider-kit).
@@ -33,10 +41,11 @@ flowchart LR
     Host["Compatible Bliss host"] -->|descriptor, defaults, policy| Perl
     Host -->|writes frozen candidate identities| Artifact["Job artifact: eligible-candidate-identities-v1"]
     Perl -->|resolves read-only path| DB["Lyrion persist.db"]
+    APC["Alternative Play Count plugin"] -->|availability| Perl
     Perl -->|native config, artifact, resource descriptors| Host
     Host -->|SPI prepare and score JSONL| Native["bliss-guidance-library-signals executable"]
     Artifact -.->|trusted, hash-bound input| Native
-    DB -.->|read-only SQLite resource| Native
+    DB -.->|tracks_persistent and optional alternativeplaycount| Native
     Native -->|bounded guidance and selection_trace_v1| Host
     Host -->|accepted result| Sinks["preview report / saved playlist / player queue"]
 ```
@@ -47,7 +56,9 @@ The provider-owned files, resources, and streams are:
   `LibrarySignals/Settings.pm` registers its settings page.
 - `LibrarySignals/HTML/EN/plugins/LibrarySignals/settings/librarysignals.html`
   renders that page; persisted values live in the Lyrion
-  `plugin.guidancelibrarysignals` preference namespace.
+  `plugin.guidancelibrarysignals` preference namespace. APC source selection
+  is a provider-owned default that compatible hosts may override, including
+  per job where the host offers descriptor-driven job controls.
 - `LibrarySignals/Provider.pm` publishes the descriptor and defaults, resolves
   host/job overrides, locates `persist.db` through Lyrion's SQLite helper, and
   returns the native program, effective horizons, trusted artifact descriptor,
@@ -57,8 +68,9 @@ The provider-owned files, resources, and streams are:
   bounded identity artifact and the read-only `persist.db` resource; it does
   not scan or rewrite the whole LMS library.
 - `bliss-guidance-library-signals` receives options, the artifact descriptor,
-  and resource descriptor through SPI JSONL on stdin. It returns bounded
-  play-count, last-played, and library-age guidance,
+  and resource descriptor through SPI JSONL on stdin. The prepare options name
+  the effective `lyrion` or `alternative_play_count` listening-history source.
+  It returns bounded play-count, last-played, and library-age guidance,
   `selection_trace_v1`, and diagnostics on stdout. There is no separate
   `prepare.options` file: native options are part of the SPI `prepare` message.
 - The host consumes the response and is the only component that writes preview
@@ -71,6 +83,7 @@ sequenceDiagram
     participant U as User
     participant H as Bliss host
     participant P as Library Signals provider
+    participant APC as Alternative Play Count
     participant DB as Lyrion persist.db
     participant A as Candidate identity artifact
     participant N as Native provider
@@ -78,12 +91,14 @@ sequenceDiagram
 
     U->>H: Enable provider and choose policy overrides
     H->>P: Read descriptor, defaults, and status
+    P->>APC: Check whether the plugin is enabled
+    APC-->>P: Availability
     P-->>H: Provider metadata and effective defaults
     H->>A: Freeze eligible candidate identities and SHA-256
     H->>P: Request native configuration(policy, as_of, artifact)
     P->>DB: Resolve and verify read-only persist.db path
     P-->>H: Program, options, artifact, and resource descriptors
-    H->>N: prepare JSONL(options, artifact, persist.db resource)
+    H->>N: prepare JSONL(source option, artifact, persist.db resource)
     H->>N: score JSONL(bounded candidates)
     N->>A: Read and verify eligible identities
     N->>DB: Query only required candidate rows

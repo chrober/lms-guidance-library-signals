@@ -19,11 +19,26 @@ PLUGIN_LIBRARYSIGNALS_STATUS_AVAILABLE
 PLUGIN_LIBRARYSIGNALS_STATUS_UNAVAILABLE
 	EN	The provider is not available (%s).
 
+PLUGIN_LIBRARYSIGNALS_APC_AVAILABLE
+	EN	Alternative Play Count is installed and enabled. Its listening-history data can be used.
+
+PLUGIN_LIBRARYSIGNALS_APC_UNAVAILABLE
+	EN	Alternative Play Count is not installed or enabled. Native Lyrion listening-history data will be used.
+
+PLUGIN_LIBRARYSIGNALS_APC_FALLBACK
+	EN	Alternative Play Count was selected but is no longer installed or enabled. Native Lyrion listening-history data will be used.
+
 PLUGIN_LIBRARYSIGNALS_DEFAULTS
 	EN	Default guidance policy
 
 PLUGIN_LIBRARYSIGNALS_DEFAULTS_NOTE
 	EN	These defaults apply when a host enables this provider without overriding an individual control. A host may show its own effective values for a job.
+
+GUIDANCE_LIBRARY_SIGNALS_USE_APC
+	EN	Use Alternative Play Count for listening history
+
+GUIDANCE_LIBRARY_SIGNALS_USE_APC_DESC
+	EN	Use Alternative Play Count's play count and last-played date instead of Lyrion's native values. Library age continues to come from Lyrion.
 
 GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE
 	EN	Play-count influence

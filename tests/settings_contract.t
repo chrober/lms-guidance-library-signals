@@ -43,6 +43,9 @@ ok(Plugins::LibrarySignals::Settings->prefs,
 
 my $descriptor = Plugins::LibrarySignals::Provider::guidance_provider_descriptor_v1();
 my %render_as = map { $_->{key} => $_->{render_as} } @{$descriptor->{controls}};
+my %control_type = map { $_->{key} => $_->{type} } @{$descriptor->{controls}};
+is($control_type{use_alternative_play_count}, 'boolean',
+    'APC source is published to host settings as a checkbox');
 is($render_as{playcount_influence}, 'slider',
     'play-count influence declares the slider UI used on the provider page');
 is($render_as{last_played_horizon_days}, 'number',
@@ -55,5 +58,11 @@ open my $template, '<', 'LibrarySignals/HTML/EN/plugins/LibrarySignals/settings/
 my $template_source = do { local $/; <$template> };
 like($template_source, qr/\[% PROCESS settings\/footer\.html %\]/,
     'settings template includes the standard footer with its Save button');
+like($template_source, qr/pref_use_alternative_play_count/,
+    'settings page exposes the provider-owned Alternative Play Count source checkbox');
+like($template_source, qr/alternative_play_count_available/,
+    'settings page renders the Alternative Play Count availability state');
+like($template_source, qr/alternative_play_count_fallback/,
+    'settings page reports when a saved APC preference falls back to native Lyrion data');
 
 done_testing;

@@ -36,12 +36,23 @@ sub beforeRender {
         Plugins::LibrarySignals::Provider::guidance_provider_defaults_v1();
     $params->{provider_status} =
         Plugins::LibrarySignals::Provider::guidance_provider_status_v1();
+    $params->{alternative_play_count_available} =
+        $params->{provider_status}->{alternative_play_count_available} ? 1 : 0;
+    $params->{prefs}->{use_alternative_play_count} =
+        $prefs->get('use_alternative_play_count') ? 1 : 0;
 }
 
 sub handler {
     my ($class, $client, $params) = @_;
     Plugins::LibrarySignals::Provider::init_preferences();
     my $changed = 0;
+    if ($params->{saveSettings}) {
+        my $value = exists $params->{pref_use_alternative_play_count} ? 1 : 0;
+        if (($prefs->get('use_alternative_play_count') ? 1 : 0) != $value) {
+            $changed = 1;
+            $prefs->set('use_alternative_play_count', $value);
+        }
+    }
     for my $key (@POLICY_KEYS) {
         my $param = 'pref_' . $key;
         next unless exists $params->{$param};

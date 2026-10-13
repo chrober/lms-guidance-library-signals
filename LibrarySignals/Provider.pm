@@ -15,6 +15,7 @@ my %FACTORY_DEFAULTS = (
     last_played_horizon_days => 180,
     library_age_influence => 0,
     library_age_horizon_days => 365,
+    use_alternative_play_count => 0,
     settings_revision => 1,
 );
 
@@ -38,8 +39,16 @@ sub guidance_provider_descriptor_v1 {
         settings_uri => 'plugins/LibrarySignals/settings/librarysignals.html',
         capabilities => [qw(play_count last_played library_age)],
         scopes => ['global_candidate'],
-        settings_schema_version => 1,
+        settings_schema_version => 2,
         controls => [
+            {
+                key => 'use_alternative_play_count',
+                type => 'boolean',
+                factory_default => 0,
+                host_overridable => 1,
+                label_token => 'GUIDANCE_LIBRARY_SIGNALS_USE_APC',
+                help_token => 'GUIDANCE_LIBRARY_SIGNALS_USE_APC_DESC',
+            },
             _control('playcount_influence', 'integer', -100, 100, 0, 'playcount', 'slider'),
             _control('last_played_influence', 'integer', -100, 100, 0, 'last_played', 'slider'),
             _control('last_played_horizon_days', 'integer', 30, 1825, 180, undef, 'number'),
@@ -93,12 +102,22 @@ sub guidance_provider_defaults_v1 {
     $defaults{settings_revision} = int(
         $prefs->get('settings_revision') || $FACTORY_DEFAULTS{settings_revision}
     );
+    $defaults{use_alternative_play_count} =
+        $prefs->get('use_alternative_play_count') ? 1 : 0;
     return \%defaults;
 }
 
 sub guidance_provider_status_v1 {
     my $program = _program_path();
+    my $apc_available = _alternative_play_count_available();
+    my $apc_configured = $prefs->get('use_alternative_play_count') ? 1 : 0;
+    my %apc_status = (
+        alternative_play_count_available => $apc_available,
+        alternative_play_count_configured => $apc_configured,
+        alternative_play_count_fallback => $apc_configured && !$apc_available ? 1 : 0,
+    );
     return {
+        %apc_status,
         available => 0,
         reason => 'native_binary_missing',
         program => '',
@@ -107,6 +126,7 @@ sub guidance_provider_status_v1 {
 
     my $version = _binary_version($program);
     return {
+        %apc_status,
         available => 0,
         reason => 'native_binary_incompatible',
         program => $program,
@@ -116,6 +136,7 @@ sub guidance_provider_status_v1 {
 
     my $persist_db = _persist_db();
     return {
+        %apc_status,
         available => 0,
         reason => 'persist_db_unavailable',
         program => $program,
@@ -123,6 +144,7 @@ sub guidance_provider_status_v1 {
     } unless $persist_db && -r $persist_db;
 
     return {
+        %apc_status,
         available => 1,
         reason => '',
         program => $program,
@@ -152,11 +174,15 @@ sub guidance_provider_native_spi_config_v1 {
     die 'Library signals requires a frozen non-negative as_of_unix_seconds'
         unless defined $as_of && $as_of =~ /^\d+$/;
 
+    my $use_apc = $effective->{use_alternative_play_count}
+        && $status->{alternative_play_count_available};
     return {
         id => 'library-signals-guidance',
         program => $status->{program},
         options => {
             as_of_unix_seconds => 0 + $as_of,
+            listening_history_source => $use_apc
+                ? 'alternative_play_count' : 'lyrion',
             last_played_horizon_days => $effective->{last_played_horizon_days},
             library_age_horizon_days => $effective->{library_age_horizon_days},
         },
@@ -174,6 +200,12 @@ sub guidance_provider_native_spi_config_v1 {
     };
 }
 
+sub _alternative_play_count_available {
+    return 0 unless eval { require Slim::Utils::PluginManager; 1 };
+    return scalar grep { $_ eq 'Plugins::AlternativePlayCount::Plugin' }
+        Slim::Utils::PluginManager->enabledPlugins();
+}
+
 sub _effective_policy {
     my ($policy, $defaults) = @_;
     my %effective;
@@ -187,6 +219,12 @@ sub _effective_policy {
             if $value < $minimum || $value > $maximum;
         $effective{$key} = $value;
     }
+    my $apc_value = exists $policy->{use_alternative_play_count}
+        ? $policy->{use_alternative_play_count}
+        : $defaults->{use_alternative_play_count};
+    die 'Invalid library-signals value for use_alternative_play_count'
+        unless defined $apc_value && $apc_value =~ /^(?:0|1)$/;
+    $effective{use_alternative_play_count} = $apc_value ? 1 : 0;
     return \%effective;
 }
 

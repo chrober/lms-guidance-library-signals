@@ -9,9 +9,22 @@
     [% ELSE %]
         <p style="color:#c9302c">[% "PLUGIN_LIBRARYSIGNALS_STATUS_UNAVAILABLE" | string(provider_status.reason) %]</p>
     [% END %]
+    [% IF provider_status.alternative_play_count_fallback %]
+        <p style="color:#c9302c">[% "PLUGIN_LIBRARYSIGNALS_APC_FALLBACK" | string %]</p>
+    [% ELSIF alternative_play_count_available %]
+        <p style="color:#398439">[% "PLUGIN_LIBRARYSIGNALS_APC_AVAILABLE" | string %]</p>
+    [% ELSE %]
+        <p style="opacity:0.7">[% "PLUGIN_LIBRARYSIGNALS_APC_UNAVAILABLE" | string %]</p>
+    [% END %]
 
     <h3>[% "PLUGIN_LIBRARYSIGNALS_DEFAULTS" | string %]</h3>
     <p>[% "PLUGIN_LIBRARYSIGNALS_DEFAULTS_NOTE" | string %]</p>
+
+    [% IF alternative_play_count_available %]
+        [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_USE_APC" desc="GUIDANCE_LIBRARY_SIGNALS_USE_APC_DESC" %]
+            <input type="checkbox" name="pref_use_alternative_play_count" id="use_alternative_play_count" value="1"[% IF prefs.use_alternative_play_count %] checked="checked"[% END %]>
+        [% END %]
+    [% END %]
 
     [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE_DESC" %]
         <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_playcount_influence" id="playcount_influence" value="[% prefs.playcount_influence %]" size="5">
