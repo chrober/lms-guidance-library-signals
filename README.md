@@ -106,6 +106,19 @@ sequenceDiagram
     H->>S: Combine with Bliss and publish only after acceptance
 ```
 
+## Logging
+
+The plugin registers the `plugin.guidancelibrarysignals` log category. At
+information level it reports the candidate count, whether each channel came
+from Lyrion or Alternative Play Count, and how many play-count, last-played,
+and library-age values were known. Debug level adds sanitized request/result
+JSON plus read-only database query, batching, cache, and score statistics.
+
+The Rust provider returns structured `guidance_log_event_v1` objects. Native
+hosts preserve them and this Lyrion provider owns their final log wording. If
+Alternative Play Count was requested but is unavailable, a warning records the
+neutral fallback to Lyrion listening history.
+
 ## Installation
 
 Install **Bliss Guidance: Library Signals** and its matching native binaries
