@@ -62,4 +62,19 @@ is($descriptor->{provider_id}, 'library-signals',
         'plugin removes its class invocant before forwarding native factory arguments');
 }
 
+{
+    no warnings 'redefine';
+    my @received;
+    local *Plugins::LibrarySignals::Provider::guidance_provider_log_events_v1 = sub {
+        @received = @_;
+        return 1;
+    };
+    my $events = [{ event => 'library_signals_prepared' }];
+    my $context = { host => 'fixture' };
+    ok(Plugins::LibrarySignals::Plugin->guidance_provider_log_events_v1($events, $context),
+        'plugin forwards native provider log events');
+    is_deeply(\@received, [$events, $context],
+        'plugin removes its class invocant before forwarding provider log events');
+}
+
 done_testing;

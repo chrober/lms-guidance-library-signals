@@ -11,6 +11,7 @@ sub getDisplayName { return 'PLUGIN_LIBRARYSIGNALS_NAME'; }
 sub initPlugin {
     my $class = shift;
     Plugins::LibrarySignals::Provider::init_preferences();
+    Plugins::LibrarySignals::Provider::init_logging();
     _load_strings();
     if (main::WEBUI) {
         require 'Plugins/LibrarySignals/Settings.pm';
@@ -43,6 +44,11 @@ sub guidance_provider_status_v1 {
 sub guidance_provider_native_spi_config_v1 {
     shift;
     return Plugins::LibrarySignals::Provider::guidance_provider_native_spi_config_v1(@_);
+}
+
+sub guidance_provider_log_events_v1 {
+    shift;
+    return Plugins::LibrarySignals::Provider::guidance_provider_log_events_v1(@_);
 }
 
 1;

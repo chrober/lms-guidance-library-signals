@@ -5,9 +5,11 @@ use warnings;
 use Config qw(%Config);
 use File::Basename qw(dirname);
 use File::Spec::Functions qw(catfile);
+use JSON::PP qw(encode_json);
 use Slim::Utils::Prefs;
 
 my $prefs = Slim::Utils::Prefs::preferences('plugin.guidancelibrarysignals');
+my $log;
 
 my %FACTORY_DEFAULTS = (
     playcount_influence => 0,
@@ -29,6 +31,17 @@ my %RANGES = (
 
 sub init_preferences {
     $prefs->init({%FACTORY_DEFAULTS});
+}
+
+sub init_logging {
+    return $log if $log;
+    return unless eval { require Slim::Utils::Log; 1 };
+    $log = Slim::Utils::Log->addLogCategory({
+        category => 'plugin.guidancelibrarysignals',
+        defaultLevel => 'WARN',
+        description => 'PLUGIN_LIBRARYSIGNALS_NAME',
+    });
+    return $log;
 }
 
 sub guidance_provider_descriptor_v1 {
@@ -176,6 +189,9 @@ sub guidance_provider_native_spi_config_v1 {
 
     my $use_apc = $effective->{use_alternative_play_count}
         && $status->{alternative_play_count_available};
+    if ($effective->{use_alternative_play_count} && !$use_apc) {
+        _log_warning('Library Signals: Alternative Play Count is unavailable; using Lyrion listening history');
+    }
     return {
         id => 'library-signals-guidance',
         program => $status->{program},
@@ -185,6 +201,7 @@ sub guidance_provider_native_spi_config_v1 {
                 ? 'alternative_play_count' : 'lyrion',
             last_played_horizon_days => $effective->{last_played_horizon_days},
             library_age_horizon_days => $effective->{library_age_horizon_days},
+            diagnostic_level => _diagnostic_level(),
         },
         artifacts => [{
             kind => 'eligible-candidate-identities-v1',
@@ -199,6 +216,86 @@ sub guidance_provider_native_spi_config_v1 {
         timeout_ms => 5000,
     };
 }
+
+sub guidance_provider_log_events_v1 {
+    my ($events, $context) = @_;
+    for my $event (@{ref($events) eq 'ARRAY' ? $events : []}) {
+        next unless ref($event) eq 'HASH';
+        my $message = _render_log_event($event);
+        next unless length $message;
+        my $level = $event->{level} || 'warning';
+        $level eq 'debug' ? _log_debug($message)
+            : $level eq 'info' ? _log_info($message)
+            : $level eq 'error' ? _log_error($message)
+            : _log_warning($message);
+    }
+    return 1;
+}
+
+sub _render_log_event {
+    my $event = shift;
+    my $name = $event->{event} || '';
+    my $details = ref($event->{details}) eq 'HASH' ? $event->{details} : {};
+    if ($name eq 'library_signals_prepare_started') {
+        return sprintf('Library Signals: preparing signals for %d candidate tracks',
+            $details->{candidates} || $event->{result_count} || 0);
+    }
+    if ($name eq 'library_signals_sources') {
+        my $sources = ref($details->{source_by_channel}) eq 'HASH'
+            ? $details->{source_by_channel} : {};
+        return sprintf('Library Signals sources: play-count=%s, last-played=%s, library-age=%s',
+            _source_label($sources->{playcount}),
+            _source_label($sources->{last_played}),
+            _source_label($sources->{library_age}));
+    }
+    if ($name eq 'library_signals_prepared') {
+        return sprintf('Library Signals prepared: candidates=%d, play-count known=%d, last-played known=%d, library-age known=%d',
+            $event->{result_count} || 0, $details->{known_playcounts} || 0,
+            $details->{known_last_played} || 0, $details->{known_library_age} || 0);
+    }
+    return 'Library Signals request JSON: ' . _safe_json($details->{request})
+        if $name eq 'library_signals_request_json';
+    if ($name eq 'library_signals_database_lookup') {
+        return sprintf('Library Signals database lookup: queried=%d, cache hits=%d, batches=%d, elapsed=%d ms',
+            $details->{queried} || 0, $details->{cached} || 0,
+            $details->{batches} || 0, $details->{elapsed_ms} || 0);
+    }
+    return 'Library Signals result JSON: ' . _safe_json($details->{result})
+        if $name eq 'library_signals_result_json';
+    if ($name eq 'library_signals_scored') {
+        return sprintf('Library Signals scoring: candidates=%d, signals=%d, database queried=%d, cache hits=%d',
+            $details->{candidates} || 0, $details->{signals} || $event->{result_count} || 0,
+            $details->{queried} || 0, $details->{cached} || 0);
+    }
+    return '';
+}
+
+sub _source_label {
+    my $source = shift || '';
+    return 'Alternative Play Count' if $source eq 'alternative_play_count';
+    return 'Lyrion' if $source eq 'lyrion';
+    return $source || 'unknown';
+}
+
+sub _diagnostic_level {
+    my $logger = init_logging();
+    return 'warning' unless $logger;
+    return 'debug' if eval { $logger->is_debug };
+    return 'info' if eval { $logger->is_info };
+    return 'warning';
+}
+
+sub _safe_json {
+    my $value = shift;
+    return '{}' unless defined $value;
+    my $json = eval { encode_json($value) } || '{}';
+    return length($json) > 16384 ? substr($json, 0, 16384) . '...' : $json;
+}
+
+sub _log_debug { my $logger = init_logging(); $logger->debug($_[0]) if $logger && eval { $logger->is_debug }; }
+sub _log_info { my $logger = init_logging(); $logger->info($_[0]) if $logger && eval { $logger->is_info }; }
+sub _log_warning { my $logger = init_logging(); $logger->warn($_[0]) if $logger; }
+sub _log_error { my $logger = init_logging(); $logger->error($_[0]) if $logger; }
 
 sub _alternative_play_count_available {
     return 0 unless eval { require Slim::Utils::PluginManager; 1 };

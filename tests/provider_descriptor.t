@@ -28,6 +28,20 @@ use lib '.';
     our @ENABLED;
     sub enabledPlugins { return @ENABLED }
     $INC{'Slim/Utils/PluginManager.pm'} = __FILE__;
+
+    package TestLog;
+    sub new { bless { lines => [] }, shift }
+    sub is_debug { 1 }
+    sub is_info { 1 }
+    sub debug { push @{$_[0]{lines}}, ['debug', $_[1]] }
+    sub info { push @{$_[0]{lines}}, ['info', $_[1]] }
+    sub warn { push @{$_[0]{lines}}, ['warning', $_[1]] }
+    sub error { push @{$_[0]{lines}}, ['error', $_[1]] }
+
+    package Slim::Utils::Log;
+    our $LOGGER = TestLog->new;
+    sub addLogCategory { return $LOGGER }
+    $INC{'Slim/Utils/Log.pm'} = __FILE__;
 }
 
 require 'LibrarySignals/Provider.pm';
@@ -106,6 +120,8 @@ my $config;
 }
 is($config->{options}->{listening_history_source}, 'alternative_play_count',
     'native configuration selects APC when a host override enables it and the backend is available');
+is($config->{options}->{diagnostic_level}, 'debug',
+    'native configuration follows the provider log category level');
 
 {
     no warnings 'redefine';
@@ -159,5 +175,46 @@ is($config->{options}->{listening_history_source}, 'lyrion',
 }
 is($config->{options}->{listening_history_source}, 'lyrion',
     'native configuration falls back to Lyrion when a saved APC choice is unavailable');
+
+Plugins::LibrarySignals::Provider::guidance_provider_log_events_v1([
+    {
+        event_version => 'guidance_log_event_v1', level => 'info', phase => 'prepare',
+        event => 'library_signals_sources', provider_id => 'library-signals-guidance',
+        details => { source_by_channel => {
+            playcount => 'alternative_play_count',
+            last_played => 'alternative_play_count',
+            library_age => 'lyrion',
+        } },
+    },
+    {
+        event_version => 'guidance_log_event_v1', level => 'info', phase => 'prepare',
+        event => 'library_signals_prepared', provider_id => 'library-signals-guidance',
+        result_count => 20,
+        details => { known_playcounts => 18, known_last_played => 17, known_library_age => 20 },
+    },
+    {
+        event_version => 'guidance_log_event_v1', level => 'debug', phase => 'score',
+        event => 'library_signals_scored', provider_id => 'library-signals-guidance',
+        details => { candidates => 20, signals => 54, queried => 0, cached => 20 },
+    },
+], { host => 'fixture' });
+ok(
+    scalar(grep {
+        $_->[1] eq 'Library Signals sources: play-count=Alternative Play Count, last-played=Alternative Play Count, library-age=Lyrion'
+    } @{$Slim::Utils::Log::LOGGER->{lines}}),
+    'native provenance event is rendered in the provider log category',
+);
+ok(
+    scalar(grep {
+        $_->[1] eq 'Library Signals prepared: candidates=20, play-count known=18, last-played known=17, library-age known=20'
+    } @{$Slim::Utils::Log::LOGGER->{lines}}),
+    'native preparation summary is rendered in the provider log category',
+);
+ok(
+    scalar(grep {
+        $_->[1] eq 'Library Signals scoring: candidates=20, signals=54, database queried=0, cache hits=20'
+    } @{$Slim::Utils::Log::LOGGER->{lines}}),
+    'native score event renders bounded debug diagnostics',
+);
 
 done_testing;
