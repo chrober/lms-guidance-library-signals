@@ -54,14 +54,14 @@ sub guidance_provider_descriptor_v1 {
         scopes => ['global_candidate'],
         settings_schema_version => 2,
         controls => [
-            {
+            (_alternative_play_count_available() ? ({
                 key => 'use_alternative_play_count',
                 type => 'boolean',
                 factory_default => 0,
                 host_overridable => 1,
                 label_token => 'GUIDANCE_LIBRARY_SIGNALS_USE_APC',
                 help_token => 'GUIDANCE_LIBRARY_SIGNALS_USE_APC_DESC',
-            },
+            }) : ()),
             _control('playcount_influence', 'integer', -100, 100, 0, 'playcount', 'slider'),
             _control('last_played_influence', 'integer', -100, 100, 0, 'last_played', 'slider'),
             _control('last_played_horizon_days', 'integer', 30, 1825, 180, undef, 'number'),

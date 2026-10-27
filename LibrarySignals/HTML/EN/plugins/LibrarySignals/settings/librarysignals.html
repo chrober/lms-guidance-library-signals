@@ -3,18 +3,11 @@
 [% WRAPPER settingSection %]
     <p>[% "PLUGIN_LIBRARYSIGNALS_NOTE" | string %]</p>
 
-    <h3>[% "PLUGIN_LIBRARYSIGNALS_STATUS" | string %]</h3>
-    [% IF provider_status.available %]
-        <p style="color:#398439">[% "PLUGIN_LIBRARYSIGNALS_STATUS_AVAILABLE" | string %]</p>
-    [% ELSE %]
+    [% UNLESS provider_status.available %]
         <p style="color:#c9302c">[% "PLUGIN_LIBRARYSIGNALS_STATUS_UNAVAILABLE" | string(provider_status.reason) %]</p>
     [% END %]
     [% IF provider_status.alternative_play_count_fallback %]
         <p style="color:#c9302c">[% "PLUGIN_LIBRARYSIGNALS_APC_FALLBACK" | string %]</p>
-    [% ELSIF alternative_play_count_available %]
-        <p style="color:#398439">[% "PLUGIN_LIBRARYSIGNALS_APC_AVAILABLE" | string %]</p>
-    [% ELSE %]
-        <p style="opacity:0.7">[% "PLUGIN_LIBRARYSIGNALS_APC_UNAVAILABLE" | string %]</p>
     [% END %]
 
     <h3>[% "PLUGIN_LIBRARYSIGNALS_DEFAULTS" | string %]</h3>

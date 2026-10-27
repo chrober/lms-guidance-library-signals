@@ -46,6 +46,10 @@ use lib '.';
 
 require 'LibrarySignals/Provider.pm';
 
+my $without_apc = Plugins::LibrarySignals::Provider::guidance_provider_descriptor_v1();
+ok(!scalar(grep { $_->{key} eq 'use_alternative_play_count' } @{$without_apc->{controls}}),
+    'hosts receive no APC control when Alternative Play Count is unavailable');
+@Slim::Utils::PluginManager::ENABLED = ('Plugins::AlternativePlayCount::Plugin');
 my $descriptor = Plugins::LibrarySignals::Provider::guidance_provider_descriptor_v1();
 is($descriptor->{protocol_version}, 1, 'publishes descriptor protocol v1');
 is($descriptor->{provider_id}, 'library-signals', 'publishes stable provider ID');

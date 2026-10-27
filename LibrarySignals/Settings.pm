@@ -46,7 +46,8 @@ sub handler {
     my ($class, $client, $params) = @_;
     Plugins::LibrarySignals::Provider::init_preferences();
     my $changed = 0;
-    if ($params->{saveSettings}) {
+    if ($params->{saveSettings}
+        && Plugins::LibrarySignals::Provider::_alternative_play_count_available()) {
         my $value = exists $params->{pref_use_alternative_play_count} ? 1 : 0;
         if (($prefs->get('use_alternative_play_count') ? 1 : 0) != $value) {
             $changed = 1;

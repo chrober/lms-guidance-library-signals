@@ -22,7 +22,13 @@ use lib '.';
     package Slim::Web::Settings;
     sub import { }
     sub new { bless {}, shift }
+    sub handler { return 1 }
     $INC{'Slim/Web/Settings.pm'} = __FILE__;
+
+    package Slim::Utils::PluginManager;
+    our @ENABLED = ('Plugins::AlternativePlayCount::Plugin');
+    sub enabledPlugins { return @ENABLED }
+    $INC{'Slim/Utils/PluginManager.pm'} = __FILE__;
 
     package Slim::Utils::Strings;
     sub string { return $_[0] }
@@ -64,5 +70,17 @@ like($template_source, qr/alternative_play_count_available/,
     'settings page renders the Alternative Play Count availability state');
 like($template_source, qr/alternative_play_count_fallback/,
     'settings page reports when a saved APC preference falls back to native Lyrion data');
+unlike($template_source, qr/<h3>\s*\[%\s*"PLUGIN_LIBRARYSIGNALS_STATUS"/,
+    'settings page does not show a provider status section');
+my $prefs = Slim::Utils::Prefs::preferences('plugin.guidancelibrarysignals');
+$prefs->set('use_alternative_play_count', 1);
+@Slim::Utils::PluginManager::ENABLED = ();
+Plugins::LibrarySignals::Settings->handler(undef, { saveSettings => 1 });
+is($prefs->get('use_alternative_play_count'), 1,
+    'saving while APC is unavailable preserves its hidden provider setting');
+@Slim::Utils::PluginManager::ENABLED = ('Plugins::AlternativePlayCount::Plugin');
+Plugins::LibrarySignals::Settings->handler(undef, { saveSettings => 1 });
+is($prefs->get('use_alternative_play_count'), 0,
+    'when APC is available, saving an unchecked control disables the setting');
 
 done_testing;
