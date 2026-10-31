@@ -1,130 +1,113 @@
 # Bliss Guidance: Library Signals
 
-`lms-guidance-library-signals` is a passive Lyrion guidance provider plugin in
-the **Bliss Guidance** family. It contributes optional play-count, last-played,
-and library-age guidance when a compatible Bliss host invokes it. It does not
-select music, reorder tracks, or control playback by itself; another plugin
-must discover, enable, and use it.
+**Rediscover music from your own library.**
 
-## How it works
+**Bliss Guidance: Library Signals** is an optional plugin for [Lyrion Music Server (LMS)](https://lyrion.org/) that helps compatible Bliss plugins use your listening history and library information to guide music selection.
 
-[Better Call Bliss](https://github.com/chrober/lms-better-call-bliss) and
-[Bliss Mixer Lab](https://github.com/chrober/lms-blissmixer-lab) discover this
-provider through Lyrion's plugin manager. Each host keeps it disabled by
-default and can expose host-specific overrides. Provider settings on this page
-remain the defaults when a host has no override.
+Your music library may contain songs you have not played in months, new albums that deserve more attention, and tracks you almost never hear. Library Signals helps [Better Call Bliss](https://github.com/chrober/lms-better-call-bliss) and [Bliss Mixer Lab](https://github.com/chrober/lms-blissmixer-lab) prefer musically suitable tracks using those signals. It provides **additional guidance only when enabled in a host**; it is not a standalone mixer.
 
-The provider invokes the native
-[`bliss-guidance-library-signals`](https://github.com/chrober/bliss-guidance-library-signals)
-binary. It reads Lyrion's `persist.db` read-only, uses a frozen candidate
-identity artifact supplied by the host, and returns bounded guidance through
-the host-neutral
-[`bliss-playlist-guidance-spi`](https://github.com/chrober/bliss-playlist-guidance-spi).
+## What can I do with it?
 
-When [Alternative Play Count](https://github.com/AF-1/lms-alternativeplaycount)
-is installed and enabled, the provider settings page offers an optional source
-switch. Compatible host settings pages render the same descriptor control and
-may override the provider default for that host. The selected source uses APC
-for play count and last played while continuing to use Lyrion's native
-first-seen value for library age. APC-specific skip and DPSV guidance is
-outside this provider.
+### Rediscover forgotten favorites
 
-Provider conventions and UI rules are documented in
-[`lms-bliss-guidance-provider-kit`](https://github.com/chrober/lms-bliss-guidance-provider-kit).
+*"I want my Don't Stop the Music mixes to bring back songs I haven't heard in a long time."*
 
-## Architecture
+Favor tracks whose **last played** date is further in the past.
 
-```mermaid
-flowchart LR
-    Settings["LibrarySignals/HTML/.../librarysignals.html"] --> Prefs["Lyrion preferences: plugin.guidancelibrarysignals"]
-    Prefs --> Perl["LibrarySignals/Provider.pm"]
-    Host["Compatible Bliss host"] -->|descriptor, defaults, policy| Perl
-    Host -->|writes frozen candidate identities| Artifact["Job artifact: eligible-candidate-identities-v1"]
-    Perl -->|resolves read-only path| DB["Lyrion persist.db"]
-    APC["Alternative Play Count plugin"] -->|availability| Perl
-    Perl -->|native config, artifact, resource descriptors| Host
-    Host -->|SPI prepare and score JSONL| Native["bliss-guidance-library-signals executable"]
-    Artifact -.->|trusted, hash-bound input| Native
-    DB -.->|tracks_persistent and optional alternativeplaycount| Native
-    Native -->|bounded guidance and selection_trace_v1| Host
-    Host -->|accepted result| Sinks["preview report / saved playlist / player queue"]
-```
+### Explore recent library additions
 
-The provider-owned files, resources, and streams are:
+*"I've just added several albums and want them to appear more often in my mixes."*
 
-- `LibrarySignals/Plugin.pm` exposes the discoverable provider, while
-  `LibrarySignals/Settings.pm` registers its settings page.
-- `LibrarySignals/HTML/EN/plugins/LibrarySignals/settings/librarysignals.html`
-  renders that page; persisted values live in the Lyrion
-  `plugin.guidancelibrarysignals` preference namespace. APC source selection
-  is a provider-owned default that compatible hosts may override, including
-  per job where the host offers descriptor-driven job controls.
-- `LibrarySignals/Provider.pm` publishes the descriptor and defaults, resolves
-  host/job overrides, locates `persist.db` through Lyrion's SQLite helper, and
-  returns the native program, effective horizons, trusted artifact descriptor,
-  and read-only resource descriptor to the host.
-- The host creates the frozen `eligible-candidate-identities-v1` JSON artifact
-  and supplies its path and SHA-256. The native provider reads only that
-  bounded identity artifact and the read-only `persist.db` resource; it does
-  not scan or rewrite the whole LMS library.
-- `bliss-guidance-library-signals` receives options, the artifact descriptor,
-  and resource descriptor through SPI JSONL on stdin. The prepare options name
-  the effective `lyrion` or `alternative_play_count` listening-history source.
-  It returns bounded play-count, last-played, and library-age guidance,
-  `selection_trace_v1`, and diagnostics on stdout. There is no separate
-  `prepare.options` file: native options are part of the SPI `prepare` message.
-- The host consumes the response and is the only component that writes preview
-  results, playlists, or player queues.
+Favor **recently added tracks** so new music gets more listening time. You can also prefer older additions if that better fits your goal.
 
-## Runtime flow
+### Give rarely played songs a chance
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant H as Bliss host
-    participant P as Library Signals provider
-    participant APC as Alternative Play Count
-    participant DB as Lyrion persist.db
-    participant A as Candidate identity artifact
-    participant N as Native provider
-    participant S as Host result sinks
+*"My mixes keep returning to the same familiar tracks. I'd like to hear more of the rest of my collection."*
 
-    U->>H: Enable provider and choose policy overrides
-    H->>P: Read descriptor, defaults, and status
-    P->>APC: Check whether the plugin is enabled
-    APC-->>P: Availability
-    P-->>H: Provider metadata and effective defaults
-    H->>A: Freeze eligible candidate identities and SHA-256
-    H->>P: Request native configuration(policy, as_of, artifact)
-    P->>DB: Resolve and verify read-only persist.db path
-    P-->>H: Program, options, artifact, and resource descriptors
-    H->>N: prepare JSONL(source option, artifact, persist.db resource)
-    H->>N: score JSONL(bounded candidates)
-    N->>A: Read and verify eligible identities
-    N->>DB: Query only required candidate rows
-    N-->>H: Guidance, selection_trace_v1, diagnostics
-    H->>S: Combine with Bliss and publish only after acceptance
-```
+Favor tracks with a **lower play count**. You can also choose to favor frequently played songs instead.
 
-## Logging
+These preferences can be useful for **Don't Stop the Music** sessions in Bliss Mixer Lab and playlist or queue optimization in Better Call Bliss, where supported by the host's controls.
 
-The plugin registers the `plugin.guidancelibrarysignals` log category. At
-information level it reports the candidate count, whether each channel came
-from Lyrion or Alternative Play Count, and how many play-count, last-played,
-and library-age values were known. Debug level adds sanitized request/result
-JSON plus read-only database query, batching, cache, and score statistics.
+**Important:** Library Signals does not choose arbitrary songs. Bliss still defines which tracks are eligible, evaluates acoustic similarity, and enforces repeat constraints. Library Signals contributes preferences within that selection.
 
-The Rust provider returns structured `guidance_log_event_v1` objects. Native
-hosts preserve them and this Lyrion provider owns their final log wording. If
-Alternative Play Count was requested but is unavailable, a warning records the
-neutral fallback to Lyrion listening history.
+## Key features
+
+| Signal | What it tells the host | Possible preference |
+| --- | --- | --- |
+| **Play count** | How often a track has been played | Less-played or more-played tracks |
+| **Last played** | When a track was most recently played | Longer-unheard or recently played tracks |
+| **Library age** | When a track was added to the library | Newer or older additions |
+
+- Reads Lyrion's existing listening data without altering it.
+- Supports **[Alternative Play Count](https://github.com/AF-1/lms-alternativeplaycount)** as an optional source for play count and last-played information. Library age still comes from Lyrion itself.
+- Exposes provider defaults that compatible hosts can override, including per-job controls where supported.
+- Treats unknown or missing data neutrally rather than assuming a track has never been played.
+- Works as a passive, separately installed guidance provider.
+
+[Alternative Play Count](https://github.com/AF-1/lms-alternativeplaycount)-specific skip history, last-skipped, and DPSV signals are **not** provided by this plugin.
+
+## How it fits into the Bliss ecosystem
+
+A compatible host—currently **[Better Call Bliss](https://github.com/chrober/lms-better-call-bliss)** or **[Bliss Mixer Lab](https://github.com/chrober/lms-blissmixer-lab)**—creates the mix or playlist and uses Bliss to determine eligible music. If you enable Library Signals in that host, it can then use the library-history information as additional guidance.
+
+Installing Library Signals alone changes neither your mixes nor your queue. The host must enable and invoke it. Each host can apply its own supported controls, so the exact options may differ.
+
+## Requirements
+
+- **Lyrion Music Server:** Developed and tested with **Lyrion 9.1**. Older versions may also work, but have not been tested.
+- **Compatible host:** [Better Call Bliss](https://github.com/chrober/lms-better-call-bliss) or [Bliss Mixer Lab](https://github.com/chrober/lms-blissmixer-lab), installed and enabled. Enable Library Signals separately on the **host plugin's settings page**; installing the provider alone does not affect music selection.
+- **Library history:** Access to Lyrion's `persist.db`, which provides play counts, last-played dates, and library-addition dates. Missing values are handled neutrally.
+- **Native binary:** A compatible `bliss-guidance-library-signals` executable. Official plugin-feed packages include binaries for Windows, macOS, x86_64 Linux, ARM64 Linux, and ARMHF Linux.
+- **Optional:** [Alternative Play Count](https://github.com/AF-1/lms-alternativeplaycount), installed and enabled, as a source for play counts and last-played dates. Library age still comes from Lyrion.
+
+Library Signals itself does **not** require a [Bliss Mixer](https://github.com/CDrummond/lms-blissmixer) installation, a `bliss.db`, or a separate Bliss analysis. Those may be required by the chosen host plugin. [Alternative Play Count](https://github.com/AF-1/lms-alternativeplaycount) is not required: the provider uses Lyrion's native history by default.
 
 ## Installation
 
-Install **Bliss Guidance: Library Signals** and its matching native binaries
-through [chrober's LMS Plugin Repository](https://github.com/chrober/lms-plugins),
-then enable the provider in a compatible host. Installing this provider never
-installs or changes a host plugin automatically.
+1. Install and configure a compatible host, such as [Better Call Bliss](https://github.com/chrober/lms-better-call-bliss) or [Bliss Mixer Lab](https://github.com/chrober/lms-blissmixer-lab). Follow that host's own requirements for [Bliss Mixer](https://github.com/CDrummond/lms-blissmixer) and library analysis.
+2. Add this repository in **LMS Settings > Plugins**, if it is not already configured:
 
-Configure the provider defaults on its own settings page. Hosts inherit those
-values unless a host or job explicitly overrides an eligible setting.
+   ```text
+   https://raw.githubusercontent.com/chrober/lms-plugins/main/repo.xml
+   ```
+
+3. Install **Bliss Guidance: Library Signals** and restart LMS if requested.
+4. Configure the provider's defaults on its own settings page.
+5. On the **settings page of [Better Call Bliss](https://github.com/chrober/lms-better-call-bliss) or [Bliss Mixer Lab](https://github.com/chrober/lms-blissmixer-lab)**, **enable Library Signals**. The provider is disabled in each host until you explicitly enable it.
+
+## Getting started
+
+For a simple example, try favoring tracks you have not heard for a long time:
+
+1. Open the **Library Signals** settings and configure the **last-played** preference.
+2. On your chosen host plugin's **settings page**, enable the **Library Signals** provider. Check whether the host exposes any overrides for that preference.
+3. Create a Bliss mix or preview a playlist optimization using that host.
+4. Compare the result with and without Library Signals enabled. Bliss similarity and your existing repeat rules remain in effect in both cases.
+
+You can repeat the experiment with play count or library age—for example, to feature recently added music.
+
+## Configuration and limitations
+
+- Provider settings are defaults; a host or job can override an eligible setting when it supports that control.
+- If [Alternative Play Count](https://github.com/AF-1/lms-alternativeplaycount) is installed and enabled, you can choose its play-count and last-played history instead of Lyrion's native values. The plugin continues to use Lyrion's native library age.
+- If [Alternative Play Count](https://github.com/AF-1/lms-alternativeplaycount) is requested but unavailable, the provider reports a neutral fallback to Lyrion history. Missing APC records do not become zero play counts.
+- The provider offers **preferences**, not guarantees that a particular song will appear. Bliss eligibility and the host's rules still apply.
+
+## Technical details
+
+The separately installed native implementation is [`bliss-guidance-library-signals`](https://github.com/chrober/bliss-guidance-library-signals). It reads Lyrion's `persist.db` in read-only mode, uses the host's frozen eligible-candidate identities, and returns bounded signals through the shared [`bliss-playlist-guidance-spi`](https://github.com/chrober/bliss-playlist-guidance-spi). Provider conventions are described in [`lms-bliss-guidance-provider-kit`](https://github.com/chrober/lms-bliss-guidance-provider-kit).
+
+### Architecture
+
+```mermaid
+flowchart LR
+    LMS["Lyrion listening history<br/>and library age"] --> Provider["Library Signals"]
+    APC["Alternative Play Count<br/>(optional listening-history source)"] -.-> Provider
+    Provider -->|"Play-count, last-played, and library-age guidance"| Host["Better Call Bliss<br/>or Bliss Mixer Lab"]
+```
+
+Library Signals reads listening history and library information from Lyrion's database, optionally using [Alternative Play Count](https://github.com/AF-1/lms-alternativeplaycount) for play counts and last-played dates. It provides additional guidance to Better Call Bliss and Bliss Mixer Lab, helping them prefer tracks based on listening history and library age. The host plugins remain responsible for music selection, mixing, and playlist or queue changes.
+
+## License and credits
+
+See the linked native provider, shared SPI, and [Bliss Mixer](https://github.com/CDrummond/lms-blissmixer) for applicable licenses and attributions.
