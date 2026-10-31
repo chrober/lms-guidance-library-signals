@@ -118,4 +118,6 @@ Library Signals reads listening history and library information from Lyrion's da
 
 ## License and credits
 
+This plugin is licensed under [GPL-3.0-only](LICENSE).
+
 See the linked native provider, shared SPI, and [Bliss Mixer](https://github.com/CDrummond/lms-blissmixer) for applicable licenses and attributions.
