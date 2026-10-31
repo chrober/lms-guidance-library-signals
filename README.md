@@ -6,6 +6,8 @@
 
 Your music library may contain songs you have not played in months, new albums that deserve more attention, and tracks you almost never hear. Library Signals helps [Better Call Bliss](https://github.com/chrober/lms-better-call-bliss) and [Bliss Mixer Lab](https://github.com/chrober/lms-blissmixer-lab) prefer musically suitable tracks using those signals. It provides **additional guidance only when enabled in a host**; it is not a standalone mixer.
 
+**Bliss-first by design:** Better Call Bliss and Bliss Mixer Lab first use Bliss acoustic similarity to identify suitable tracks. Library Signals then uses play counts, last-played dates, and library age to influence which of those **already Bliss-eligible tracks** are preferred. It cannot introduce new candidates or override repeat rules; it adds guidance rather than creating its own mixes.
+
 ## What can I do with it?
 
 ### Rediscover forgotten favorites
@@ -48,9 +50,15 @@ These preferences can be useful for **Don't Stop the Music** sessions in Bliss M
 
 ## How it fits into the Bliss ecosystem
 
-A compatible host—currently **[Better Call Bliss](https://github.com/chrober/lms-better-call-bliss)** or **[Bliss Mixer Lab](https://github.com/chrober/lms-blissmixer-lab)**—creates the mix or playlist and uses Bliss to determine eligible music. If you enable Library Signals in that host, it can then use the library-history information as additional guidance.
+| Component | What it contributes | Required? |
+| --- | --- | --- |
+| [Bliss Mixer](https://github.com/CDrummond/lms-blissmixer) | Acoustic library analysis (`bliss.db`) and base mixing preferences for compatible hosts | Required by host; not by this provider directly |
+| [Better Call Bliss](https://github.com/chrober/lms-better-call-bliss) | Playlist and player-queue optimization that can use Library Signals guidance | One of the two compatible hosts |
+| [Bliss Mixer Lab](https://github.com/chrober/lms-blissmixer-lab) | Experimental **Bliss (Lab)** Don't Stop the Music mixes that can use Library Signals guidance | One of the two compatible hosts |
+| **Library Signals** | Additional play-count, last-played, and library-age guidance for already Bliss-eligible tracks | This plugin |
+| [Last.fm Guidance](https://github.com/chrober/lms-guidance-lastfm) | Separate optional similar-track and similar-artist guidance | No |
 
-Installing Library Signals alone changes neither your mixes nor your queue. The host must enable and invoke it. Each host can apply its own supported controls, so the exact options may differ.
+Install **Better Call Bliss**, **Bliss Mixer Lab**, or both, and enable Library Signals on the **settings page of each host** where you want to use it. Installing Library Signals alone does not change your mixes or player queue. The host is responsible for music selection and output, and the supported guidance controls may differ between hosts.
 
 ## Requirements
 
