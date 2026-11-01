@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.4
+
+- Correct the native source commit recorded in the plugin's source tree.
+
 ## 0.3.3
 
 - Bundle native provider 0.3.2 and distribute version-specific source and

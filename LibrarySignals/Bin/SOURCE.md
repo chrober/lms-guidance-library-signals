@@ -6,7 +6,7 @@ supported Lyrion platform in this directory. They are built from
 and are intentionally not committed to this plugin repository.
 
 - Native release: `v0.3.2`
-- Native commit: `908b423e0fb8ae8f940383320221273ac2c2f1e1`
+- Native commit: `f95b480ae664d4388128afc108cd7f5aee7a504d`
 
 The provider checks the binary's `version --json` metadata before it exposes a
 usable native SPI configuration to a host.
