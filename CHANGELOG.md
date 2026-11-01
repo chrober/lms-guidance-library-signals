@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.3
+
+- Bundle native provider 0.3.2 and distribute version-specific source and
+  third-party license material with the release.
+
 ## 0.3.2 - 2026-10-27
 
 - Hide the Alternative Play Count control in hosts when that plugin is not
