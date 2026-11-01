@@ -106,6 +106,7 @@ jobs:
           mkdir native-assets
           gh release download "$NATIVE_RELEASE" --repo "$NATIVE_REPO" --dir native-assets --pattern 'bliss-guidance-library-signals-*'
           (cd native-assets && sha256sum -c *.sha256)
+          (cd native-assets && sha256sum -c bliss-guidance-library-signals-third-party-licenses.zip.sha256)
           git check-ref-format "refs/tags/$NATIVE_RELEASE"
           commit="$(git ls-remote "https://github.com/$NATIVE_REPO.git" "refs/tags/$NATIVE_RELEASE" "refs/tags/$NATIVE_RELEASE^{}" | tail -n 1 | cut -f 1)"
           python scripts/verify_native_source.py native-assets/bliss-guidance-library-signals-source.tar.gz "$commit"
@@ -127,6 +128,8 @@ jobs:
           package_platform() {
             platform="$1"; asset="$2"; rm -rf staging/LibrarySignals; cp -a LibrarySignals staging/LibrarySignals
             cp LICENSE THIRD_PARTY_NOTICES.md staging/LibrarySignals/
+            mkdir -p staging/LibrarySignals/third-party-licenses
+            cp native-assets/bliss-guidance-library-signals-third-party-licenses.zip staging/LibrarySignals/third-party-licenses/
             printf '# Source provenance\n\nPlugin commit: %s\nhttps://github.com/chrober/lms-guidance-library-signals/tree/%s\n\nNative provider release: %s\nhttps://github.com/chrober/bliss-guidance-library-signals/releases/tag/%s\n\nThese references do not constitute a complete Corresponding Source bundle.\n' "$GITHUB_SHA" "$GITHUB_SHA" "$NATIVE_RELEASE" "$NATIVE_RELEASE" > staging/LibrarySignals/SOURCE.md
             printf '\nPlugin source archive: https://github.com/chrober/lms-guidance-library-signals/releases/download/%s/lms-guidance-library-signals-source-%s.zip\n' "$RELEASE_TAG" "$RELEASE_VERSION" >> staging/LibrarySignals/SOURCE.md
             printf 'Native source archive: https://github.com/chrober/bliss-guidance-library-signals/releases/download/%s/bliss-guidance-library-signals-source.tar.gz\n' "$NATIVE_RELEASE" >> staging/LibrarySignals/SOURCE.md
