@@ -5,8 +5,8 @@ supported Lyrion platform in this directory. They are built from
 [`bliss-guidance-library-signals`](https://github.com/chrober/bliss-guidance-library-signals)
 and are intentionally not committed to this plugin repository.
 
-- Native release: `v0.3.2`
-- Native commit: `f95b480ae664d4388128afc108cd7f5aee7a504d`
+- Native release: `v0.3.3`
+- Native commit: `62bdf1326b427d7a2b7fb6b9589f9dfcb9431284`
 
 The provider checks the binary's `version --json` metadata before it exposes a
 usable native SPI configuration to a host.

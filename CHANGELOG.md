@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.6
+
+- Bundle native Library Signals provider 0.3.3, including its updated source
+  archive and release safeguards; signal behavior is unchanged.
+
 ## 0.3.5
 
 - Refresh release packaging with the current native provider 0.3.2 and its source and license material.

@@ -8,7 +8,7 @@ on:
         required: false
         default: ""
       native_release:
-        description: "bliss-guidance-library-signals release tag. Empty uses v0.3.2."
+        description: "bliss-guidance-library-signals release tag. Empty uses v0.3.3."
         required: false
         default: ""
       prerelease:
@@ -86,7 +86,7 @@ jobs:
           fi
           install_version="$(python -c 'import xml.etree.ElementTree as ET; print(ET.parse("LibrarySignals/install.xml").getroot().findtext("version"))')"
           test "$version" = "$install_version"
-          native_release="${NATIVE_RELEASE_INPUT:-v0.3.2}"
+          native_release="${NATIVE_RELEASE_INPUT:-v0.3.3}"
           tag="$version"
           base_url="https://github.com/${GITHUB_REPOSITORY}/releases/download/$tag"
           {
