@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.5
+
+- Refresh release packaging with the current native provider 0.3.2 and its source and license material.
+
 ## 0.3.4
 
 - Correct the native source commit recorded in the plugin's source tree.
