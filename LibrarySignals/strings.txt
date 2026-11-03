@@ -1,71 +1,95 @@
 PLUGIN_LIBRARYSIGNALS_NAME
 	EN	Bliss Guidance: Library Signals
+	DE	Bliss Guidance: Library Signals
 
 PLUGIN_LIBRARYSIGNALS_DESC
 	EN	Optional listening and library signals for compatible Bliss hosts
+	DE	Optionale Wiedergabe- und Mediathekssignale für kompatible Bliss-Plugins
 
 DEBUG_PLUGIN_LIBRARYSIGNALS
 	EN	Bliss Guidance: Library Signals
+	DE	Bliss Guidance: Library Signals
 
 PLUGIN_LIBRARYSIGNALS_NOTE
 	EN	This provider publishes optional local listening and library-age guidance. Hosts discover it automatically, but keep it disabled until you enable it in the host's settings.
+	DE	Dieser Anbieter stellt optionale lokale Wiedergabe- und Mediathekssignale bereit. Kompatible Plugins erkennen ihn automatisch; er bleibt jedoch deaktiviert, bis er in deren Einstellungen aktiviert wird.
 
 PLUGIN_LIBRARYSIGNALS_STATUS
 	EN	Provider status
+	DE	Anbieterstatus
 
 PLUGIN_LIBRARYSIGNALS_STATUS_AVAILABLE
 	EN	The native library-signals provider and Lyrion persistent database are available.
+	DE	Der native Library-Signals-Anbieter und die persistente Lyrion-Datenbank sind verfügbar.
 
 PLUGIN_LIBRARYSIGNALS_STATUS_UNAVAILABLE
 	EN	The provider is not available (%s).
+	DE	Der Anbieter ist nicht verfügbar (%s).
 
 PLUGIN_LIBRARYSIGNALS_APC_AVAILABLE
 	EN	Alternative Play Count is installed and enabled. Its listening-history data can be used.
+	DE	Alternative Play Count ist installiert und aktiviert. Dessen Wiedergabeverlauf kann verwendet werden.
 
 PLUGIN_LIBRARYSIGNALS_APC_UNAVAILABLE
 	EN	Alternative Play Count is not installed or enabled. Native Lyrion listening-history data will be used.
+	DE	Alternative Play Count ist nicht installiert oder nicht aktiviert. Der Lyrion-Wiedergabeverlauf wird verwendet.
 
 PLUGIN_LIBRARYSIGNALS_APC_FALLBACK
 	EN	Alternative Play Count was selected but is no longer installed or enabled. Native Lyrion listening-history data will be used.
+	DE	Alternative Play Count wurde ausgewählt, ist aber nicht mehr installiert oder aktiviert. Der Lyrion-Wiedergabeverlauf wird verwendet.
 
 PLUGIN_LIBRARYSIGNALS_DEFAULTS
 	EN	Default guidance policy
+	DE	Standardeinstellungen für die Gewichtung
 
 PLUGIN_LIBRARYSIGNALS_DEFAULTS_NOTE
 	EN	These defaults apply when a host enables this provider without overriding an individual control. A host may show its own effective values for a job.
+	DE	Diese Standardwerte gelten, wenn ein Plugin diesen Anbieter aktiviert und den jeweiligen Wert nicht überschreibt. Ein Plugin kann für einen Auftrag eigene wirksame Werte anzeigen.
 
 GUIDANCE_LIBRARY_SIGNALS_USE_APC
 	EN	Use Alternative Play Count for listening history
+	DE	Alternative Play Count für den Wiedergabeverlauf verwenden
 
 GUIDANCE_LIBRARY_SIGNALS_USE_APC_DESC
 	EN	Use Alternative Play Count's play count and last-played date instead of Lyrion's native values. Library age continues to come from Lyrion.
+	DE	Wiedergabezähler und Datum der letzten Wiedergabe von Alternative Play Count statt von Lyrion verwenden. Das Mediatheksalter stammt weiterhin von Lyrion.
 
 GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE
 	EN	Play-count influence
+	DE	Einfluss des Wiedergabezählers
 
 GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE_DESC
 	EN	Negative values prefer less-played tracks; positive values prefer more-played tracks. Zero is neutral.
+	DE	Negative Werte bevorzugen seltener gespielte Titel; positive Werte bevorzugen häufiger gespielte Titel. Null ist neutral.
 
 GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE
 	EN	Last-played influence
+	DE	Einfluss der letzten Wiedergabe
 
 GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE_DESC
 	EN	Negative values prefer tracks not heard recently; positive values prefer recently heard tracks. Zero is neutral.
+	DE	Negative Werte bevorzugen länger nicht gespielte Titel; positive Werte bevorzugen kürzlich gespielte Titel. Null ist neutral.
 
 GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS
 	EN	Last-played saturation horizon (days)
+	DE	Sättigungshorizont für die letzte Wiedergabe (Tage)
 
 GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS_DESC
 	EN	After this age, increasingly older last-played dates have the same effect.
+	DE	Mit zunehmendem Abstand über diesen Zeitraum hinaus wirken sich ältere Wiedergabedaten immer ähnlicher aus.
 
 GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_INFLUENCE
 	EN	Library-age influence
+	DE	Einfluss des Mediatheksalters
 
 GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_INFLUENCE_DESC
 	EN	Positive values prefer newer library additions; negative values prefer older additions. Zero is neutral.
+	DE	Positive Werte bevorzugen neuere, negative Werte ältere Mediathekszugänge. Null ist neutral.
 
 GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_HORIZON_DAYS
 	EN	Library-age saturation horizon (days)
+	DE	Sättigungshorizont für das Mediatheksalter (Tage)
 
 GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_HORIZON_DAYS_DESC
 	EN	After this age, increasingly older library dates have the same effect.
+	DE	Mit zunehmendem Abstand über diesen Zeitraum hinaus wirken sich ältere Aufnahmedaten immer ähnlicher aus.

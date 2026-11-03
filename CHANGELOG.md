@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.7
+
+- Add German translations for provider settings and status information.
+
 ## 0.3.6
 
 - Bundle native Library Signals provider 0.3.3, including its updated source
