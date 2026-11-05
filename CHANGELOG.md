@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.8
+
+- Clarify the provider description in English and German.
+
 ## 0.3.7
 
 - Add German translations for provider settings and status information.
