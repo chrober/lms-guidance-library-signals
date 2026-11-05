@@ -3,8 +3,8 @@ PLUGIN_LIBRARYSIGNALS_NAME
 	DE	Bliss Guidance: Library Signals
 
 PLUGIN_LIBRARYSIGNALS_DESC
-	EN	Optional listening and library signals for compatible Bliss hosts
-	DE	Optionale Wiedergabe- und Mediathekssignale für kompatible Bliss-Plugins
+	EN	Optional weighting by play count, last played, and date added to the library for compatible Bliss plugins
+	DE	Optionale Gewichtung nach Wiedergabehäufigkeit, letzter Wiedergabe und Aufnahmedatum in die Mediathek für kompatible Bliss-Plugins
 
 DEBUG_PLUGIN_LIBRARYSIGNALS
 	EN	Bliss Guidance: Library Signals
