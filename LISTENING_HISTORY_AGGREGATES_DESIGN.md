@@ -16,7 +16,10 @@ sizes. Large group sets fall back to scanning the catalogue while retaining
 that same distribution. This is not a Raspberry Pi benchmark and the complete
 DSTM session still needs measurement. The native provider and optimizer test
 suites and selected Perl host tests pass, including isolated Perl tests on the
-Pi; this does not establish native Pi performance or a live DSTM result.
+Pi. An ARM64 native provider test against 20 tracks sampled across that Pi's
+actual library completed in approximately 331 ms using Lyrion history and
+368 ms using APC. This is a read-only provider session, not a live DSTM result;
+other candidate distributions and concurrent load may take longer.
 The native prototype can group exact Bliss credits using read-only Bliss and
 host identity-snapshot databases, with Better Call Bliss passing its existing
 snapshot. The exact-credit implementation currently scans the catalogue: on
@@ -27,8 +30,12 @@ join. For a 20-candidate fixture with 200,000 tracks, the selective join
 subsequently measured 330 ms locally. These timings exclude process startup
 and hash verification, and are not Pi measurements. Consequently it is deliberately neutral
 for hosts with a real-time budget, including Lab, and warns instead of blocking
-or silently using another identity. Further performance work, native Pi timing and
-live end-to-end verification remain open.
+or silently using another identity. Further performance work, broader Pi
+timing and live end-to-end verification remain open.
+On the same Pi, a read-only exact-credit session for 20 sampled tracks took
+about 3.5 seconds, and computing the 59.5 MiB identity snapshot's hash took
+another 1.2 seconds. Exact-credit aggregation is therefore not suitable for
+Lab's current 500 ms budget without a different reuse/validation approach.
 Exact-credit album aggregation also falls back to a filtered catalogue scan
 when the selected albums exceed the safe SQLite parameter batch size; a
 regression test covers this with an artificially reduced SQLite limit.
