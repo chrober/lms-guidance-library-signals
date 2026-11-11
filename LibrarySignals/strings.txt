@@ -46,6 +46,22 @@ PLUGIN_LIBRARYSIGNALS_DEFAULTS_NOTE
 	EN	These defaults apply when a host enables this provider without overriding an individual control. A host may show its own effective values for a job.
 	DE	Diese Standardwerte gelten, wenn ein Plugin diesen Anbieter aktiviert und den jeweiligen Wert nicht überschreibt. Ein Plugin kann für einen Auftrag eigene wirksame Werte anzeigen.
 
+GUIDANCE_LIBRARY_SIGNALS_GROUP_SHARED
+	EN	Shared settings
+	DE	Gemeinsame Einstellungen
+
+GUIDANCE_LIBRARY_SIGNALS_GROUP_TRACKS
+	EN	Tracks
+	DE	Titel
+
+GUIDANCE_LIBRARY_SIGNALS_GROUP_ALBUMS
+	EN	Albums
+	DE	Alben
+
+GUIDANCE_LIBRARY_SIGNALS_GROUP_ARTISTS
+	EN	Artists
+	DE	Interpreten
+
 GUIDANCE_LIBRARY_SIGNALS_USE_APC
 	EN	Use Alternative Play Count for listening history
 	DE	Alternative Play Count für den Wiedergabeverlauf verwenden
@@ -79,8 +95,8 @@ GUIDANCE_LIBRARY_SIGNALS_USE_APC_DESC
 	DE	Wiedergabezähler und Datum der letzten Wiedergabe von Alternative Play Count statt von Lyrion verwenden. Das Mediatheksalter stammt weiterhin von Lyrion.
 
 GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE
-	EN	Play-count influence
-	DE	Einfluss des Wiedergabezählers
+	EN	Track play-count influence
+	DE	Einfluss der Titelwiedergaben
 
 GUIDANCE_LIBRARY_SIGNALS_ALBUM_PLAYCOUNT_INFLUENCE
 	EN	Album play-count influence
@@ -119,8 +135,8 @@ GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE_DESC
 	DE	Negative Werte bevorzugen seltener gespielte Titel; positive Werte bevorzugen häufiger gespielte Titel. Null ist neutral.
 
 GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE
-	EN	Last-played influence
-	DE	Einfluss der letzten Wiedergabe
+	EN	Track last-played influence
+	DE	Einfluss der letzten Titelwiedergabe
 
 GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE_DESC
 	EN	Negative values prefer tracks not heard recently; positive values prefer recently heard tracks. Zero is neutral.
@@ -131,8 +147,8 @@ GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS
 	DE	Sättigungshorizont für die letzte Wiedergabe (Tage)
 
 GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS_DESC
-	EN	After this age, increasingly older last-played dates have the same effect.
-	DE	Mit zunehmendem Abstand über diesen Zeitraum hinaus wirken sich ältere Wiedergabedaten immer ähnlicher aus.
+	EN	Applies to tracks, albums and artists. With increasing age beyond this horizon, older last-played dates have increasingly similar effects.
+	DE	Gilt für Titel, Alben und Interpreten. Mit zunehmendem Abstand über diesen Zeitraum hinaus wirken sich ältere Wiedergabedaten immer ähnlicher aus.
 
 GUIDANCE_LIBRARY_SIGNALS_LIBRARY_AGE_INFLUENCE
 	EN	Library-age influence

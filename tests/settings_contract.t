@@ -72,6 +72,23 @@ like($template_source, qr/alternative_play_count_fallback/,
     'settings page reports when a saved APC preference falls back to native Lyrion data');
 like($template_source, qr/name="pref_artist_identity_mode"/, 'settings page exposes artist identity');
 like($template_source, qr/IF lab_available/, 'follow Lab choice is only shown while Lab is available');
+my @groups = map { $_->{group_label_token} || '' } @{$descriptor->{controls}};
+is_deeply([grep { length } @groups], [
+    ('GUIDANCE_LIBRARY_SIGNALS_GROUP_SHARED') x 2,
+    ('GUIDANCE_LIBRARY_SIGNALS_GROUP_TRACKS') x 4,
+    ('GUIDANCE_LIBRARY_SIGNALS_GROUP_ALBUMS') x 2,
+    ('GUIDANCE_LIBRARY_SIGNALS_GROUP_ARTISTS') x 3,
+], 'provider controls declare ordered shared, track, album and artist groups');
+for my $group (qw(SHARED TRACKS ALBUMS ARTISTS)) {
+    like($template_source, qr/GUIDANCE_LIBRARY_SIGNALS_GROUP_$group/, "$group section is present on provider settings page");
+}
+for my $group (qw(TRACKS ALBUMS ARTISTS)) {
+    like($template_source, qr{<br/><hr style="opacity:0\.4" class="sub-sep"/><br/>\s*<h4>\[% "GUIDANCE_LIBRARY_SIGNALS_GROUP_$group"}, "$group follows a Bliss Mixer-style separator");
+}
+open my $strings, '<:encoding(UTF-8)', 'LibrarySignals/strings.txt' or die $!;
+my $translations = do { local $/; <$strings> };
+like($translations, qr/GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE\s+EN\s+Track play-count influence\s+DE\s+Einfluss der Titelwiedergaben/, 'play-count label identifies tracks in both languages');
+like($translations, qr/GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE\s+EN\s+Track last-played influence\s+DE\s+Einfluss der letzten Titelwiedergabe/, 'last-played label identifies tracks in both languages');
 for my $key (qw(album_playcount_influence artist_playcount_influence album_last_played_influence artist_last_played_influence)) {
     like($template_source, qr/name="pref_$key"/, "$key has a provider-owned setting");
     is($render_as{$key}, 'slider', "$key uses the same slider style in hosts");
