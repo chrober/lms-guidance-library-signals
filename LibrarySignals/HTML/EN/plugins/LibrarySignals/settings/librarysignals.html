@@ -19,12 +19,38 @@
         [% END %]
     [% END %]
 
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY" desc="GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_DESC" %]
+        <input type="hidden" name="artist_identity_changed" id="artist_identity_changed" value="0">
+        <select name="pref_artist_identity_mode" id="artist_identity_mode" onchange="document.getElementById('artist_identity_changed').value='1'">
+            [% IF lab_available %]<option value="follow_lab"[% IF prefs.artist_identity_mode == 'follow_lab' %] selected="selected"[% END %]>[% "GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_FOLLOW_LAB" | string %]</option>[% END %]
+            <option value="shared_artist"[% IF prefs.artist_identity_mode == 'shared_artist' %] selected="selected"[% END %]>[% "GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_SHARED" | string %]</option>
+            <option value="primary_artist"[% IF prefs.artist_identity_mode == 'primary_artist' %] selected="selected"[% END %]>[% "GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_PRIMARY" | string %]</option>
+        </select>
+        [% IF artist_identity_follow_fallback %]<p>[% "GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_FALLBACK" | string %]</p>[% END %]
+    [% END %]
+
     [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE_DESC" %]
         <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_playcount_influence" id="playcount_influence" value="[% prefs.playcount_influence %]" size="5">
     [% END %]
 
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_ALBUM_PLAYCOUNT_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_ALBUM_PLAYCOUNT_INFLUENCE_DESC" %]
+        <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_album_playcount_influence" id="album_playcount_influence" value="[% prefs.album_playcount_influence %]" size="5">
+    [% END %]
+
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_ARTIST_PLAYCOUNT_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_ARTIST_PLAYCOUNT_INFLUENCE_DESC" %]
+        <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_artist_playcount_influence" id="artist_playcount_influence" value="[% prefs.artist_playcount_influence %]" size="5">
+    [% END %]
+
     [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_INFLUENCE_DESC" %]
         <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_last_played_influence" id="last_played_influence" value="[% prefs.last_played_influence %]" size="5">
+    [% END %]
+
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_ALBUM_LAST_PLAYED_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_ALBUM_LAST_PLAYED_INFLUENCE_DESC" %]
+        <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_album_last_played_influence" id="album_last_played_influence" value="[% prefs.album_last_played_influence %]" size="5">
+    [% END %]
+
+    [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_ARTIST_LAST_PLAYED_INFLUENCE" desc="GUIDANCE_LIBRARY_SIGNALS_ARTIST_LAST_PLAYED_INFLUENCE_DESC" %]
+        <input type="number" min="-100" max="100" step="1" class="stdedit sliderInput_-100_100_1" name="pref_artist_last_played_influence" id="artist_last_played_influence" value="[% prefs.artist_last_played_influence %]" size="5">
     [% END %]
 
     [% WRAPPER settingGroup title="GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS" desc="GUIDANCE_LIBRARY_SIGNALS_LAST_PLAYED_HORIZON_DAYS_DESC" %]

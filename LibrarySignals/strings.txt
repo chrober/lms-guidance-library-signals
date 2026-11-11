@@ -50,6 +50,30 @@ GUIDANCE_LIBRARY_SIGNALS_USE_APC
 	EN	Use Alternative Play Count for listening history
 	DE	Alternative Play Count für den Wiedergabeverlauf verwenden
 
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY
+	EN	Artist identity for listening history
+	DE	Interpretenidentität für den Wiedergabeverlauf
+
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_DESC
+	EN	<b>Follow Bliss Mixer Lab:</b> Uses Lab's artist identity setting when available. Exact Bliss artist credit requires identity data and is unavailable in time-limited real-time selection; other guidance remains available.<br/><br/><b>Any shared credited artist:</b> Includes matching credited artists, including collaborations.<br/><br/><b>Primary artist only:</b> Uses each track's primary artist.
+	DE	<b>Bliss Mixer Lab folgen:</b> Verwendet, falls verfügbar, die Interpretenidentität aus Lab. Der exakte Bliss-Interpreten-Credit benötigt Identitätsdaten und ist bei zeitlich begrenzter Echtzeitauswahl nicht verfügbar; die übrige Gewichtung bleibt verfügbar.<br/><br/><b>Jeder gemeinsame Interpret:</b> Berücksichtigt gemeinsame Interpreten einschließlich Kollaborationen.<br/><br/><b>Nur Hauptinterpret:</b> Verwendet den Hauptinterpreten jedes Titels.
+
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_FOLLOW_LAB
+	EN	Follow Bliss Mixer Lab
+	DE	Bliss Mixer Lab folgen
+
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_SHARED
+	EN	Any shared credited artist
+	DE	Jeder gemeinsame Interpret
+
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_PRIMARY
+	EN	Primary artist only
+	DE	Nur Hauptinterpret
+
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_IDENTITY_FALLBACK
+	EN	Bliss Mixer Lab is unavailable. Any shared credited artist is used until Lab becomes available again.
+	DE	Bliss Mixer Lab ist nicht verfügbar. Bis Lab wieder verfügbar ist, wird jeder gemeinsame Interpret verwendet.
+
 GUIDANCE_LIBRARY_SIGNALS_USE_APC_DESC
 	EN	Use Alternative Play Count's play count and last-played date instead of Lyrion's native values. Library age continues to come from Lyrion.
 	DE	Wiedergabezähler und Datum der letzten Wiedergabe von Alternative Play Count statt von Lyrion verwenden. Das Mediatheksalter stammt weiterhin von Lyrion.
@@ -57,6 +81,38 @@ GUIDANCE_LIBRARY_SIGNALS_USE_APC_DESC
 GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE
 	EN	Play-count influence
 	DE	Einfluss des Wiedergabezählers
+
+GUIDANCE_LIBRARY_SIGNALS_ALBUM_PLAYCOUNT_INFLUENCE
+	EN	Album play-count influence
+	DE	Einfluss der Album-Wiedergaben
+
+GUIDANCE_LIBRARY_SIGNALS_ALBUM_PLAYCOUNT_INFLUENCE_DESC
+	EN	Negative values prefer albums with fewer track plays; positive values prefer albums with more track plays. Zero is neutral. Counts are sums of track plays, not complete album plays.
+	DE	Negative Werte bevorzugen Alben mit weniger Titelwiedergaben, positive Werte solche mit mehr Titelwiedergaben. Null ist neutral. Gezählt werden Titelwiedergaben, nicht vollständige Albumwiedergaben.
+
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_PLAYCOUNT_INFLUENCE
+	EN	Artist play-count influence
+	DE	Einfluss der Interpreten-Wiedergaben
+
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_PLAYCOUNT_INFLUENCE_DESC
+	EN	Negative values prefer artists with fewer track plays; positive values prefer artists with more track plays. Zero is neutral. Counts are sums of track plays.
+	DE	Negative Werte bevorzugen Interpreten mit weniger Titelwiedergaben, positive Werte solche mit mehr Titelwiedergaben. Null ist neutral. Gezählt werden Titelwiedergaben.
+
+GUIDANCE_LIBRARY_SIGNALS_ALBUM_LAST_PLAYED_INFLUENCE
+	EN	Album last-played influence
+	DE	Einfluss der letzten Albumwiedergabe
+
+GUIDANCE_LIBRARY_SIGNALS_ALBUM_LAST_PLAYED_INFLUENCE_DESC
+	EN	Negative values prefer albums whose tracks were last heard longer ago; positive values prefer albums heard more recently. Zero is neutral.
+	DE	Negative Werte bevorzugen Alben, deren Titel länger nicht gespielt wurden, positive Werte zuletzt gespielte Alben. Null ist neutral.
+
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_LAST_PLAYED_INFLUENCE
+	EN	Artist last-played influence
+	DE	Einfluss der letzten Interpretenwiedergabe
+
+GUIDANCE_LIBRARY_SIGNALS_ARTIST_LAST_PLAYED_INFLUENCE_DESC
+	EN	Negative values prefer artists whose tracks were last heard longer ago; positive values prefer artists heard more recently. Zero is neutral.
+	DE	Negative Werte bevorzugen Interpreten, deren Titel länger nicht gespielt wurden, positive Werte zuletzt gespielte Interpreten. Null ist neutral.
 
 GUIDANCE_LIBRARY_SIGNALS_PLAYCOUNT_INFLUENCE_DESC
 	EN	Negative values prefer less-played tracks; positive values prefer more-played tracks. Zero is neutral.

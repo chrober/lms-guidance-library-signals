@@ -1,9 +1,40 @@
 # Artist and album listening-history guidance
 
-Status: **proposed design**, 10 November 2026. The existing provider supplies
-track-level signals; the aggregate signals and shared defaults described here
-are not yet implemented. This document records intended behaviour and the
-remaining decisions, not a change to the released plugins.
+Status: **implementation in progress**, 11 November 2026. The native provider,
+provider settings and both hosts have local, uncommitted aggregate-signal
+changes. They have not been released or deployed. Better Call Bliss's separate
+repeat-identity default alignment is already implemented, as noted below.
+
+Implementation is in progress across the native provider, the shared guidance
+host, the optimizer, Lab and this plugin; it is not ready for deployment. Lab
+currently gives its native guidance session 500 ms. On a synthetic 200,000-track
+in-memory catalogue, a local debug build took about 785 ms to aggregate the
+whole catalogue and 48 ms for the groups of 20 candidates, excluding process
+startup. The native prototype uses candidate-scoped aggregation, and its
+percentile distribution is over candidate-represented groups for all pool
+sizes. Large group sets fall back to scanning the catalogue while retaining
+that same distribution. This is not a Raspberry Pi benchmark and the complete
+DSTM session still needs measurement. The native provider and optimizer test
+suites and selected Perl host tests pass, including isolated Perl tests on the
+Pi; this does not establish native Pi performance or a live DSTM result.
+The native prototype can group exact Bliss credits using read-only Bliss and
+host identity-snapshot databases, with Better Call Bliss passing its existing
+snapshot. The exact-credit implementation currently scans the catalogue: on
+the same local synthetic 200,000-track fixture it initially took 1.36 seconds
+in a release build for 20 candidate tracks. A revised join measured about
+365 ms to 1.12 s across local release-build runs before the latest selective
+join. For a 20-candidate fixture with 200,000 tracks, the selective join
+subsequently measured 330 ms locally. These timings exclude process startup
+and hash verification, and are not Pi measurements. Consequently it is deliberately neutral
+for hosts with a real-time budget, including Lab, and warns instead of blocking
+or silently using another identity. Further performance work, native Pi timing and
+live end-to-end verification remain open.
+Exact-credit album aggregation also falls back to a filtered catalogue scan
+when the selected albums exceed the safe SQLite parameter batch size; a
+regression test covers this with an artificially reduced SQLite limit.
+If multiple Bliss files map to one Lyrion track with conflicting normalized
+credits, its artist identity and contribution remain unknown; its album
+history remains usable. Matching credits contribute the track only once.
 
 ## Purpose and boundaries
 
@@ -50,13 +81,21 @@ recording matching is permitted.
 
 ## Artist identity and defaults
 
-Bliss Mixer Lab already owns a repeat-identity setting with shared artist,
-primary artist and exact Bliss credit choices. Better Call Bliss currently has
-its own setting and per-run control. The intended default alignment is:
+Bliss Mixer Lab owns a repeat-identity setting with shared artist, primary
+artist and exact Bliss credit choices. Better Call Bliss retains its own
+setting and per-job control. Since Better Call Bliss 0.22.16, its default is
+**Follow Bliss Mixer Lab**: when Lab is enabled, the effective mode is read
+from Lab when job defaults are prepared; when Lab is unavailable or its value
+is missing or invalid, the effective mode falls back to **Any shared artist**.
+An explicit Better Call Bliss setting or per-job choice can override the
+default. A one-time migration switches the existing Better Call Bliss setting
+to follow Lab, including previously explicit settings; choices made after that
+migration are preserved. Saved Extras profiles and previous jobs remain
+separate from this setting.
 
-- Lab supplies the default repeat identity when installed and enabled.
-- Better Call Bliss follows Lab by default, while preserving a per-run override.
-  It must also work independently when Lab is absent or disabled.
+This is a repeat-window policy. The in-progress Library Signals implementation
+resolves its separate aggregation policy as follows:
+
 - Library Signals has its own identity setting. Its default is **Follow Bliss
   Mixer Lab** when Lab is available; users may explicitly select another policy.
 - Show **Follow Bliss Mixer Lab** only while Lab is installed and enabled. If a
@@ -67,18 +106,23 @@ its own setting and per-run control. The intended default alignment is:
   provider and per-run overrides may intentionally produce different effective
   settings; only the default is shared.
 
-The provider must remain host-neutral and work without either host. Define and
-test the common default and preference resolution without a hard dependency on
-Lab. Check whether exact Bliss credit is implementable from the trusted inputs
-available to the provider; do not expose an option that cannot be honoured.
-Explicitly define identity resolution for collaborations, missing contributors
-and compilations, and show unresolved or partial identities in diagnostics.
+The provider remains host-neutral and works without either host. The common
+default and preference resolution do not require Lab. Exact Bliss credit uses
+trusted Bliss and identity-snapshot inputs when available; it is deliberately
+not applied to Lab's time-limited real-time selection until a sufficiently fast
+path has been verified. The provider warns and leaves artist guidance neutral
+instead of silently substituting another identity. Album and track signals
+remain available. Collaborations, missing identities, compilation attribution
+and partial coverage must remain explicit in results and diagnostics.
 
-For the separate repeat-identity cleanup, the owner approved a one-time
-migration of existing Better Call Bliss installations to follow Lab; subsequent
-explicit choices must be preserved. Saved Extras profiles and previous jobs
-remain separate from this setting. Define how the provider's own identity
-snapshot stays consistent for the duration of a job.
+The Better Call Bliss implementation and regression coverage are in
+[`Defaults.pm`](https://github.com/chrober/lms-better-call-bliss/blob/main/BetterCallBliss/Defaults.pm),
+[`JobOptions.pm`](https://github.com/chrober/lms-better-call-bliss/blob/main/BetterCallBliss/JobOptions.pm),
+[`artist_identity_migration.t`](https://github.com/chrober/lms-better-call-bliss/blob/main/tests/artist_identity_migration.t)
+and [`job_options.t`](https://github.com/chrober/lms-better-call-bliss/blob/main/tests/job_options.t).
+The exact-credit path checks the host identity snapshot's hash before use;
+inheriting the same default does not require provider and host overrides to
+match. Real-time snapshot reuse and performance still require verification.
 
 ## Influence and combination
 
@@ -116,10 +160,11 @@ signals. Verify the mapping to the hosts' actual scoring and preserve the
 existing track-only result when the added controls are disabled; the formula
 is a proposal until those compatibility tests establish the details.
 
-Choose and document normalization for raw aggregate counts, including whether
-and how to account for catalogue and album size. This affects ranking only;
-reported totals remain actual sums of supplied track values. Apply configurable
-last-played saturation consistently and define the horizons for the new levels.
+The prototype ranks summed plays against the groups represented in the frozen
+candidate inventory; it does not divide by album size. Last-played signals use
+the existing saturation horizon. Partial groups reduce confidence in proportion
+to known track values. Reported totals remain actual sums of supplied track
+values, not estimates of independent listening events.
 Counts, source, coverage, timestamps, normalized signals and bounded
 contribution should be available to host diagnostics without changing existing
 Lab log formatting unexpectedly.
@@ -150,9 +195,10 @@ provider failures isolated; do not block audio playback or the server UI.
 - MBID-free libraries work; synchronized APC counters are not described as
   deduplicated playback events. No recording grouping or automatic cross-copy
   inference is performed by this provider.
-- Lab available, absent, disabled and re-enabled: follow option visibility,
-  saved preference, fallback, provider/host overrides and migration are correct
-  and defaults do not drift.
+- Lab available, absent, disabled and re-enabled: verify the proposed provider
+  follow option's visibility, saved preference and fallback, plus provider and
+  host overrides. Verify defaults do not drift; retain regression coverage for
+  the already implemented Better Call Bliss migration and fallback.
 - Each signed influence independently supports negative, zero and positive;
   combinations are bounded and missing signals do not manufacture evidence.
   Existing settings with new influences disabled preserve prior behaviour.

@@ -70,9 +70,28 @@ like($template_source, qr/alternative_play_count_available/,
     'settings page renders the Alternative Play Count availability state');
 like($template_source, qr/alternative_play_count_fallback/,
     'settings page reports when a saved APC preference falls back to native Lyrion data');
+like($template_source, qr/name="pref_artist_identity_mode"/, 'settings page exposes artist identity');
+like($template_source, qr/IF lab_available/, 'follow Lab choice is only shown while Lab is available');
+for my $key (qw(album_playcount_influence artist_playcount_influence album_last_played_influence artist_last_played_influence)) {
+    like($template_source, qr/name="pref_$key"/, "$key has a provider-owned setting");
+    is($render_as{$key}, 'slider', "$key uses the same slider style in hosts");
+}
 unlike($template_source, qr/<h3>\s*\[%\s*"PLUGIN_LIBRARYSIGNALS_STATUS"/,
     'settings page does not show a provider status section');
 my $prefs = Slim::Utils::Prefs::preferences('plugin.guidancelibrarysignals');
+$prefs->set('artist_identity_mode', 'follow_lab');
+@Slim::Utils::PluginManager::ENABLED = ();
+Plugins::LibrarySignals::Settings->handler(undef, { saveSettings => 1 });
+is($prefs->get('artist_identity_mode'), 'follow_lab', 'hidden follow Lab preference survives saving while Lab is unavailable');
+Plugins::LibrarySignals::Settings->handler(undef, { saveSettings => 1, pref_artist_identity_mode => 'shared_artist' });
+is($prefs->get('artist_identity_mode'), 'follow_lab', 'displayed fallback does not overwrite a hidden follow preference');
+Plugins::LibrarySignals::Settings->handler(undef, { saveSettings => 1, pref_artist_identity_mode => 'shared_artist', artist_identity_changed => 1 });
+is($prefs->get('artist_identity_mode'), 'shared_artist', 'an explicit selection of the displayed fallback replaces the hidden follow preference');
+$prefs->set('artist_identity_mode', 'follow_lab');
+Plugins::LibrarySignals::Settings->handler(undef, { saveSettings => 1, pref_artist_identity_mode => 'primary_artist' });
+is($prefs->get('artist_identity_mode'), 'primary_artist', 'artist identity can be explicitly overridden');
+Plugins::LibrarySignals::Settings->handler(undef, { saveSettings => 1, pref_album_playcount_influence => -60 });
+is($prefs->get('album_playcount_influence'), -60, 'saving persists the aggregate influence');
 $prefs->set('use_alternative_play_count', 1);
 @Slim::Utils::PluginManager::ENABLED = ();
 Plugins::LibrarySignals::Settings->handler(undef, { saveSettings => 1 });
