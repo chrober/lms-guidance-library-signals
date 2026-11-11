@@ -1,12 +1,13 @@
 # Artist and album listening-history guidance
 
 Status: **implementation in progress**, 11 November 2026. The native provider,
-provider settings and both hosts have local, uncommitted aggregate-signal
-changes. They have not been released or deployed. Better Call Bliss's separate
-repeat-identity default alignment is already implemented, as noted below.
+provider settings and both hosts have aggregate-signal changes on coordinated
+feature branches. A development build is deployed on the test Pi but has not
+been released. Better Call Bliss's separate repeat-identity default alignment
+is already implemented, as noted below.
 
 Implementation is in progress across the native provider, the shared guidance
-host, the optimizer, Lab and this plugin; it is not ready for deployment. Lab
+host, the optimizer, Lab and this plugin; it is not ready for release. Lab
 currently gives its native guidance session 500 ms. On a synthetic 200,000-track
 in-memory catalogue, a local debug build took about 785 ms to aggregate the
 whole catalogue and 48 ms for the groups of 20 candidates, excluding process
@@ -19,7 +20,11 @@ suites and selected Perl host tests pass, including isolated Perl tests on the
 Pi. An ARM64 native provider test against 20 tracks sampled across that Pi's
 actual library completed in approximately 331 ms using Lyrion history and
 368 ms using APC. This is a read-only provider session, not a live DSTM result;
-other candidate distributions and concurrent load may take longer.
+other candidate distributions and concurrent load may take longer. A live
+Better Call Bliss read-only preview applied all four aggregate channels to
+its three additions. An isolated native mixer endpoint returned all four
+channels for 20 real candidate tracks in 390 ms; Lab's full DSTM workflow and
+its rendered logs still require live verification.
 The native prototype can group exact Bliss credits using read-only Bliss and
 host identity-snapshot databases, with Better Call Bliss passing its existing
 snapshot. The exact-credit implementation currently scans the catalogue: on
